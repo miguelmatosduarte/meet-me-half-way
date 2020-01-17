@@ -15,7 +15,7 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 		SkyScannerAPIUtils skyScannerAPIUtils = new SkyScannerAPIUtils();
-		System.out.println("Obtained key: " + skyScannerAPIUtils.postCreateSession());
+		skyScannerAPIUtils.pollSessionResults();
 	}
 
 /*	@Bean

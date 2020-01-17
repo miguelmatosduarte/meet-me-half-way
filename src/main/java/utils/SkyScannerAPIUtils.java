@@ -20,11 +20,17 @@ public class SkyScannerAPIUtils {
 
     private static int HTTP_OK_STATUS_CODE = 201;
     private static String X_RAPIDAPI_HOST = "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com";
-    private static String X_RAPIDAPI_PRICING_ENDPOINT = "/apiservices/pricing/v1.0";
+    private static String X_RAPIDAPI_PRICING_ENDPOINT = "/apiservices/pricing/v1.0/";
+    private static String X_RAPIDAPI_PRICING_UK_ENDPOINT = "/apiservices/pricing/uk2/v1.0/";
     private static String X_RAPIDAPI_PRICING_KEY = "2aaae45b8bmsh9918702b54421acp165237jsn763c1f50ee62";
-    private static String SKYSCANNER_PARTNERS_API_URL = "http://partners.api.skyscanner.net/apiservices/pricing/uk2/v1.0/";
 
-    public String postCreateSession(){
+    private String sessionKey;
+
+    public SkyScannerAPIUtils(){
+        this.sessionKey = this.postCreateSession();
+    }
+
+    private String postCreateSession(){
 
         String sessionKey = "";
 
@@ -71,4 +77,18 @@ public class SkyScannerAPIUtils {
         }
         return sessionKey;
     }
+
+    public void pollSessionResults(){
+        try {
+            HttpResponse<JsonNode> response = Unirest.get(String.format("https://%s%s%s", X_RAPIDAPI_HOST, X_RAPIDAPI_PRICING_UK_ENDPOINT, this.sessionKey))
+                    .header("X-RapidAPI-Host", X_RAPIDAPI_HOST)
+                    .header("X-RapidAPI-Key", X_RAPIDAPI_PRICING_KEY)
+                    .asJson()
+                    ;
+            System.out.println("Hello!");
+        } catch (UnirestException e) {
+            logger.error("Error polling session results! Exception: ", e);
+        }
+    }
+
 }
