@@ -1,0 +1,14 @@
+{
+  "Carriers": [
+    {"CarrierId":819,"Name":"Aegean Airlines"}
+  ],
+  "Quotes": [
+    {"QuoteId":1,"QuoteDateTime":"2020-01-16T19:18:00","MinPrice":337,"OutboundLeg":{"CarrierIds":[1816],"DepartureDate":"2020-09-01T00:00:00","OriginId":72991,"DestinationId":42795},"Direct":false}
+  ],
+  "Currencies": [
+    {"DecimalSeparator":",","ThousandsSeparator":".","SymbolOnLeft":false,"SpaceBetweenAmountAndSymbol":true,"Symbol":"\u20ac","DecimalDigits":2,"Code":"EUR","RoundingCoefficient":0}
+  ],
+  "Places": [
+    {"PlaceId":40304,"Type":"Station","CityId":"MALA","CountryName":"Espanha","IataCode":"AGP","SkyscannerCode":"AGP","CityName":"Málaga","Name":"Málaga"}
+  ]
+}

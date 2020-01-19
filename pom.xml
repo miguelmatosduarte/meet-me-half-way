@@ -18,14 +18,19 @@
 		<java.version>1.8</java.version>
 		<spring-web.version>5.2.2.RELEASE</spring-web.version>
 		<unirest-java.version>1.4.9</unirest-java.version>
+		<jsonschema2pojo-core.version>0.4.35</jsonschema2pojo-core.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
+			<groupId>org.jsonschema2pojo</groupId>
+			<artifactId>jsonschema2pojo-core</artifactId>
+			<version>${jsonschema2pojo-core.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

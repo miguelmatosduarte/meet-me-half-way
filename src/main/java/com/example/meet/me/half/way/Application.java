@@ -15,6 +15,7 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 		SkyScannerAPIUtils skyScannerAPIUtils = new SkyScannerAPIUtils();
+		skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "PORT", "anywhere", "2020-09-01");
 		skyScannerAPIUtils.pollSessionResults();
 	}
 

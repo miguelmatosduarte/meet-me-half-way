@@ -1,9 +1,11 @@
 package utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import json.schema.browsequotesresponse.BrowseQuotesResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,23 +20,25 @@ public class SkyScannerAPIUtils {
 
     Logger logger = LoggerFactory.getLogger(SkyScannerAPIUtils.class);
 
-    private static int HTTP_OK_STATUS_CODE = 201;
-    private static String X_RAPIDAPI_HOST = "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com";
-    private static String X_RAPIDAPI_PRICING_ENDPOINT = "/apiservices/pricing/v1.0/";
-    private static String X_RAPIDAPI_PRICING_UK_ENDPOINT = "/apiservices/pricing/uk2/v1.0/";
-    private static String X_RAPIDAPI_PRICING_KEY = "2aaae45b8bmsh9918702b54421acp165237jsn763c1f50ee62";
+    private static final int HTTP_OK_STATUS_CODE = 201;
+    private static final String X_RAPIDAPI_HOST = "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com";
+    private static final String X_RAPIDAPI_PRICING_ENDPOINT = "/apiservices/pricing/v1.0/";
+    private static final String X_RAPIDAPI_BROWSE_QUOTES_ENDPOINT = "/apiservices/browsequotes/v1.0/";
+    private static final String X_RAPIDAPI_PRICING_UK_ENDPOINT = "/apiservices/pricing/uk2/v1.0/";
+    private static final String X_RAPIDAPI_PRICING_KEY = "2aaae45b8bmsh9918702b54421acp165237jsn763c1f50ee62";
 
     private String sessionKey;
 
-    public SkyScannerAPIUtils(){
+    public SkyScannerAPIUtils() {
         this.sessionKey = this.postCreateSession();
+        System.out.println("Session key: " + this.sessionKey);
     }
 
-    private String postCreateSession(){
+    private String postCreateSession() {
 
         String sessionKey = "";
 
-        try{
+        try {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.MONTH, 6);
             Date date = cal.getTime();
@@ -58,12 +62,12 @@ public class SkyScannerAPIUtils {
                     .field("adults", 1)
                     .asJson();
 
-            if (response.getStatus() == HTTP_OK_STATUS_CODE){
+            if (response.getStatus() == HTTP_OK_STATUS_CODE) {
                 String pattern = "^http://partners.api.skyscanner.net/apiservices/pricing/uk2/v1.0/(.+)$";
                 Pattern r = Pattern.compile(pattern);
                 Matcher m = r.matcher(response.getHeaders().get("Location").get(0));
 
-                if (m.find( )) {
+                if (m.find()) {
                     sessionKey = m.group(1);
                     logger.info("Session Key: " + sessionKey);
                 } else {
@@ -71,24 +75,39 @@ public class SkyScannerAPIUtils {
                 }
             }
 
-        } catch(UnirestException e){
+        } catch (UnirestException e) {
             logger.error("Error creating session! Exception: ", e);
             return sessionKey;
         }
         return sessionKey;
     }
 
-    public void pollSessionResults(){
+    public void pollSessionResults() {
         try {
             HttpResponse<JsonNode> response = Unirest.get(String.format("https://%s%s%s", X_RAPIDAPI_HOST, X_RAPIDAPI_PRICING_UK_ENDPOINT, this.sessionKey))
                     .header("X-RapidAPI-Host", X_RAPIDAPI_HOST)
                     .header("X-RapidAPI-Key", X_RAPIDAPI_PRICING_KEY)
-                    .asJson()
-                    ;
-            System.out.println("Hello!");
+                    .asJson();
+
         } catch (UnirestException e) {
             logger.error("Error polling session results! Exception: ", e);
         }
     }
 
+    public BrowseQuotesResponse browseQuotes(String country, String currency, String locale, String originPlace, String destinationPlace, String outboundPartialDate) {
+        BrowseQuotesResponse quotes = new BrowseQuotesResponse();
+        try {
+            HttpResponse<JsonNode> response = Unirest.get(String.format("https://%s%s%s/%s/%s/%s/%s/%s", X_RAPIDAPI_HOST, X_RAPIDAPI_BROWSE_QUOTES_ENDPOINT, country, currency, locale, originPlace, destinationPlace, outboundPartialDate))
+                    .header("X-RapidAPI-Host", X_RAPIDAPI_HOST)
+                    .header("X-RapidAPI-Key", X_RAPIDAPI_PRICING_KEY)
+                    .asJson();
+
+            ObjectMapper mapper = new ObjectMapper();
+            quotes = mapper.readValue(response.getBody().toString(), BrowseQuotesResponse.class);
+
+        } catch (Exception e) {
+            logger.error("Error browsing quotes! Exception: ", e);
+        }
+        return quotes;
+    }
 }
