@@ -26,6 +26,7 @@ public class SkyScannerAPIUtils {
     private static final String X_RAPIDAPI_BROWSE_QUOTES_ENDPOINT = "/apiservices/browsequotes/v1.0/";
     private static final String X_RAPIDAPI_PRICING_UK_ENDPOINT = "/apiservices/pricing/uk2/v1.0/";
     private static final String X_RAPIDAPI_PRICING_KEY = "2aaae45b8bmsh9918702b54421acp165237jsn763c1f50ee62";
+    private static final String SKYSCANNER_PARTNERS_API = "http://partners.api.skyscanner.net/apiservices/pricing/uk2/v1.0/";
 
     private String sessionKey;
 
@@ -63,7 +64,7 @@ public class SkyScannerAPIUtils {
                     .asJson();
 
             if (response.getStatus() == HTTP_OK_STATUS_CODE) {
-                String pattern = "^http://partners.api.skyscanner.net/apiservices/pricing/uk2/v1.0/(.+)$";
+                String pattern = "^" + SKYSCANNER_PARTNERS_API + "(.+)$";
                 Pattern r = Pattern.compile(pattern);
                 Matcher m = r.matcher(response.getHeaders().get("Location").get(0));
 
@@ -104,6 +105,7 @@ public class SkyScannerAPIUtils {
 
             ObjectMapper mapper = new ObjectMapper();
             quotes = mapper.readValue(response.getBody().toString(), BrowseQuotesResponse.class);
+            System.out.println("Hello");
 
         } catch (Exception e) {
             logger.error("Error browsing quotes! Exception: ", e);

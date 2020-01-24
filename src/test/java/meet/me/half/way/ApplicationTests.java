@@ -1,4 +1,4 @@
-package com.example.meet.me.half.way;
+package meet.me.half.way;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

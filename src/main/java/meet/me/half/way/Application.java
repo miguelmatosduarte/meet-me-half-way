@@ -1,13 +1,8 @@
-package com.example.meet.me.half.way;
+package meet.me.half.way;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import utils.SkyScannerAPIUtils;
-
-import java.util.Arrays;
 
 @SpringBootApplication
 public class Application {

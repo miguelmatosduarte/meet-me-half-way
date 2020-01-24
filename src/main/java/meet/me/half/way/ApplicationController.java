@@ -1,4 +1,4 @@
-package com.example.meet.me.half.way;
+package meet.me.half.way;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
