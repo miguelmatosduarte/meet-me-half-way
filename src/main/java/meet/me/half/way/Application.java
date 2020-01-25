@@ -1,8 +1,12 @@
 package meet.me.half.way;
 
+import json.schema.browsequotesresponse.BrowseQuotesResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import utils.QuoteComparer;
 import utils.SkyScannerAPIUtils;
+
+import java.util.Collections;
 
 @SpringBootApplication
 public class Application {
@@ -10,8 +14,9 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 		SkyScannerAPIUtils skyScannerAPIUtils = new SkyScannerAPIUtils();
-		skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "PORT", "anywhere", "2020-09-01");
-		skyScannerAPIUtils.pollSessionResults();
+		BrowseQuotesResponse quotes = skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "PORT", "anywhere", "2020-09-01");
+		QuoteComparer quoteComparer = new QuoteComparer(Collections.singletonList( quotes ));
+		quoteComparer.compareQuotes();
 	}
 
 /*	@Bean

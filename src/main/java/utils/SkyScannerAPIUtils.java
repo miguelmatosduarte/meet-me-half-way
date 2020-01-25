@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class SkyScannerAPIUtils {
 
-    Logger logger = LoggerFactory.getLogger(SkyScannerAPIUtils.class);
+    private Logger logger = LoggerFactory.getLogger(SkyScannerAPIUtils.class);
 
     private static final int HTTP_OK_STATUS_CODE = 201;
     private static final String X_RAPIDAPI_HOST = "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com";
@@ -105,8 +105,6 @@ public class SkyScannerAPIUtils {
 
             ObjectMapper mapper = new ObjectMapper();
             quotes = mapper.readValue(response.getBody().toString(), BrowseQuotesResponse.class);
-            System.out.println("Hello");
-
         } catch (Exception e) {
             logger.error("Error browsing quotes! Exception: ", e);
         }
