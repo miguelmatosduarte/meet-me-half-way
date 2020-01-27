@@ -28,13 +28,13 @@ public class Quote {
     @JsonProperty("QuoteDateTime")
     private String quoteDateTime;
     @JsonProperty("MinPrice")
-    private Integer minPrice;
+    private Double minPrice;
     @JsonProperty("OutboundLeg")
     private OutboundLeg outboundLeg;
     @JsonProperty("Direct")
     private Boolean direct;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("QuoteId")
     public Integer getQuoteId() {
@@ -67,16 +67,16 @@ public class Quote {
     }
 
     @JsonProperty("MinPrice")
-    public Integer getMinPrice() {
+    public Double getMinPrice() {
         return minPrice;
     }
 
     @JsonProperty("MinPrice")
-    public void setMinPrice(Integer minPrice) {
+    public void setMinPrice(Double minPrice) {
         this.minPrice = minPrice;
     }
 
-    public Quote withMinPrice(Integer minPrice) {
+    public Quote withMinPrice(Double minPrice) {
         this.minPrice = minPrice;
         return this;
     }
@@ -141,7 +141,7 @@ public class Quote {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Quote) == false) {
+        if (!(other instanceof Quote)) {
             return false;
         }
         Quote rhs = ((Quote) other);

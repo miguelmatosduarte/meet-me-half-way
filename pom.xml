@@ -54,7 +54,6 @@
 			<version>${unirest-java.version}</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
