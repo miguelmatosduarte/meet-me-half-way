@@ -5,13 +5,11 @@ import json.schema.browsequotesresponse.Place;
 import json.schema.browsequotesresponse.Quote;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,7 +34,7 @@ public class QuoteComparer {
         Set<String> comparableCities = findComparableCities(quotesByCity);
 
         quotesByCity.forEach(
-          list -> list.removeIf(s -> comparableCities.contains(s.getCityId()))
+          list -> list.removeIf(s -> !comparableCities.contains(s.getCityId()))
         );
 
         String cheapestCity = findCheapestCityOverall(quotesByCity);
@@ -124,10 +122,10 @@ public class QuoteComparer {
         return stream.collect(Collectors.toList());
     }
 
-    private String getMinKey(Map<String, Double> map, String... keys) {
+    private String getMinKey(Map<String, Double> map) {
         String minKey = null;
         double minValue = Double.MAX_VALUE;
-        for(String key : keys) {
+        for(String key : map.keySet()) {
             double value = map.get(key);
             if(value < minValue) {
                 minValue = value;

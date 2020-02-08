@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import utils.QuoteComparer;
 import utils.SkyScannerAPIUtils;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class Application {
@@ -14,8 +15,14 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 		SkyScannerAPIUtils skyScannerAPIUtils = new SkyScannerAPIUtils();
-		BrowseQuotesResponse quotes = skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "PORT", "anywhere", "2020-09-01");
-		QuoteComparer quoteComparer = new QuoteComparer(Collections.singletonList( quotes ));
+
+		List<BrowseQuotesResponse> quotes = new ArrayList<>();
+		quotes.add(skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "RIOA", "anywhere", "2020-07-02"));
+		quotes.add(skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "MAD", "anywhere", "2020-07-02"));
+		quotes.add(skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "RGN", "anywhere", "2020-07-02"));
+
+		// BrowseQuotesResponse quotes = skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "PORT", "anywhere", "2020-09-01");
+		QuoteComparer quoteComparer = new QuoteComparer(quotes);
 		quoteComparer.compareQuotes();
 	}
 

@@ -28,9 +28,9 @@ public class Json2Pojo {
 
     public static void main(String[] args) {
 
-        String packageName="json.schema.browsequotesresponse";
+        String packageName="json.schema.kit.templates";
 
-        File inputJson= new File("src/main/resources/browseQuotesResponse.json");
+        File inputJson= new File("/Users/duartem2/Documents/TECH/repos/kolibri/kafka-interactive-tool/kafkaInspector/src/main/resources/templates/offsets.json");
 
         File outputPojoDirectory=new File("src/main/java/");
 
@@ -52,12 +52,10 @@ public class Json2Pojo {
 
     }
 
-    public void convert2JSON(URL inputJson, File outputPojoDirectory, String packageName, String className) throws IOException{
+    void convert2JSON(URL inputJson, File outputPojoDirectory, String packageName, String className) throws IOException{
 
         JCodeModel codeModel = new JCodeModel();
-
-        URL source = inputJson;
-
+        
         GenerationConfig config = new DefaultGenerationConfig() {
 
             @Override
@@ -78,7 +76,7 @@ public class Json2Pojo {
 
         SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(config), new SchemaStore()), new SchemaGenerator());
 
-        mapper.generate(codeModel, className, packageName, source);
+        mapper.generate(codeModel, className, packageName, inputJson);
 
         codeModel.build(outputPojoDirectory);
 
