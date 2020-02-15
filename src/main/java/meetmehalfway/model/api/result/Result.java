@@ -34,9 +34,9 @@ public class Result {
     @JsonProperty("currency")
     private String currency;
     @JsonProperty("passengerResults")
-    private List<PassengerResult> passengerResults = new ArrayList<>();
+    private List<PassengerResult> passengerResults = new ArrayList<PassengerResult>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("type")
     public String getType() {
@@ -143,7 +143,7 @@ public class Result {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Result)) {
+        if ((other instanceof Result) == false) {
             return false;
         }
         Result rhs = ((Result) other);

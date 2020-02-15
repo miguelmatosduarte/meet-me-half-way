@@ -31,7 +31,7 @@ public class PassengerResult {
     @JsonProperty("price")
     private Double price;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("number")
     public Integer getNumber() {
@@ -123,7 +123,7 @@ public class PassengerResult {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof PassengerResult)) {
+        if ((other instanceof PassengerResult) == false) {
             return false;
         }
         PassengerResult rhs = ((PassengerResult) other);
