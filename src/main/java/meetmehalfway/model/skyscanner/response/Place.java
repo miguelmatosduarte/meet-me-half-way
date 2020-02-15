@@ -1,5 +1,5 @@
 
-package json.schema.browsequotesresponse;
+package meetmehalfway.model.skyscanner.response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class Place {
     @JsonProperty("Name")
     private String name;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("PlaceId")
     public Integer getPlaceId() {
@@ -195,7 +195,7 @@ public class Place {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Place) == false) {
+        if (!(other instanceof Place)) {
             return false;
         }
         Place rhs = ((Place) other);

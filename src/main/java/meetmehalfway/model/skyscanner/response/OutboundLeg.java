@@ -1,5 +1,5 @@
 
-package json.schema.browsequotesresponse;
+package meetmehalfway.model.skyscanner.response;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class OutboundLeg {
 
     @JsonProperty("CarrierIds")
-    private List<Integer> carrierIds = new ArrayList<Integer>();
+    private List<Integer> carrierIds = new ArrayList<>();
     @JsonProperty("DepartureDate")
     private String departureDate;
     @JsonProperty("OriginId")
@@ -33,7 +33,7 @@ public class OutboundLeg {
     @JsonProperty("DestinationId")
     private Integer destinationId;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("CarrierIds")
     public List<Integer> getCarrierIds() {
@@ -125,7 +125,7 @@ public class OutboundLeg {
         if (other == this) {
             return true;
         }
-        if ((other instanceof OutboundLeg) == false) {
+        if (!(other instanceof OutboundLeg)) {
             return false;
         }
         OutboundLeg rhs = ((OutboundLeg) other);

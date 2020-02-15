@@ -1,6 +1,6 @@
-package utils;
+package meetmehalfway.model;
 
-import json.schema.browsequotesresponse.Quote;
+import meetmehalfway.model.skyscanner.response.Quote;
 
 public class QuoteCity {
     private String cityId;

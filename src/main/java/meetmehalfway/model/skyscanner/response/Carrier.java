@@ -1,5 +1,5 @@
 
-package json.schema.browsequotesresponse;
+package meetmehalfway.model.skyscanner.response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class Carrier {
     @JsonProperty("Name")
     private String name;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("CarrierId")
     public Integer getCarrierId() {
@@ -87,7 +87,7 @@ public class Carrier {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Carrier) == false) {
+        if (!(other instanceof Carrier)) {
             return false;
         }
         Carrier rhs = ((Carrier) other);

@@ -1,11 +1,10 @@
-package meet.me.half.way;
+package meetmehalfway;
 
-import json.schema.browsequotesresponse.BrowseQuotesResponse;
+import meetmehalfway.model.skyscanner.response.BrowseQuotesResponse;
+import meetmehalfway.utils.QuoteComparer;
+import meetmehalfway.utils.SkyScannerAPIUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import utils.QuoteComparer;
-import utils.SkyScannerAPIUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,7 @@ public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-		SkyScannerAPIUtils skyScannerAPIUtils = new SkyScannerAPIUtils();
+/*		SkyScannerAPIUtils skyScannerAPIUtils = new SkyScannerAPIUtils();
 
 		List<BrowseQuotesResponse> quotes = new ArrayList<>();
 		quotes.add(skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "RIOA", "anywhere", "2020-07-02"));
@@ -23,7 +22,7 @@ public class Application {
 
 		// BrowseQuotesResponse quotes = skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", "PORT", "anywhere", "2020-09-01");
 		QuoteComparer quoteComparer = new QuoteComparer(quotes);
-		quoteComparer.compareQuotes();
+		quoteComparer.compareQuotes();*/
 	}
 
 /*	@Bean

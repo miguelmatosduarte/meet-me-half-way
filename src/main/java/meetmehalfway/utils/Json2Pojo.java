@@ -1,4 +1,4 @@
-package utils;
+package meetmehalfway.utils;
 
 import java.io.File;
 
@@ -28,9 +28,9 @@ public class Json2Pojo {
 
     public static void main(String[] args) {
 
-        String packageName="json.schema.kit.templates";
+        String packageName="meetmehalfway.model";
 
-        File inputJson= new File("/Users/duartem2/Documents/TECH/repos/kolibri/kafka-interactive-tool/kafkaInspector/src/main/resources/templates/offsets.json");
+        File inputJson= new File("/Users/duartem2/Documents/TECH/repos/github/miguelmatosduarte/meet-me-half-way/src/main/resources/templates/search.json");
 
         File outputPojoDirectory=new File("src/main/java/");
 
@@ -55,7 +55,7 @@ public class Json2Pojo {
     void convert2JSON(URL inputJson, File outputPojoDirectory, String packageName, String className) throws IOException{
 
         JCodeModel codeModel = new JCodeModel();
-        
+
         GenerationConfig config = new DefaultGenerationConfig() {
 
             @Override

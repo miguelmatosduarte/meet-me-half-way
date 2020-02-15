@@ -1,5 +1,5 @@
 
-package json.schema.browsequotesresponse;
+package meetmehalfway.model.skyscanner.response;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,15 +25,15 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class BrowseQuotesResponse {
 
     @JsonProperty("Carriers")
-    private List<Carrier> carriers = new ArrayList<Carrier>();
+    private List<Carrier> carriers = new ArrayList<>();
     @JsonProperty("Quotes")
-    private List<Quote> quotes = new ArrayList<Quote>();
+    private List<Quote> quotes = new ArrayList<>();
     @JsonProperty("Currencies")
-    private List<Currency> currencies = new ArrayList<Currency>();
+    private List<Currency> currencies = new ArrayList<>();
     @JsonProperty("Places")
-    private List<Place> places = new ArrayList<Place>();
+    private List<Place> places = new ArrayList<>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("Carriers")
     public List<Carrier> getCarriers() {
@@ -125,7 +125,7 @@ public class BrowseQuotesResponse {
         if (other == this) {
             return true;
         }
-        if ((other instanceof BrowseQuotesResponse) == false) {
+        if (!(other instanceof BrowseQuotesResponse)) {
             return false;
         }
         BrowseQuotesResponse rhs = ((BrowseQuotesResponse) other);

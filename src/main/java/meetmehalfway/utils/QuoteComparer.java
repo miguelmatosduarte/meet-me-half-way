@@ -1,8 +1,13 @@
-package utils;
+package meetmehalfway.utils;
 
-import json.schema.browsequotesresponse.BrowseQuotesResponse;
-import json.schema.browsequotesresponse.Place;
-import json.schema.browsequotesresponse.Quote;
+import meetmehalfway.model.search.Passenger;
+import meetmehalfway.model.search.Search;
+import meetmehalfway.model.skyscanner.response.BrowseQuotesResponse;
+import meetmehalfway.model.skyscanner.response.Place;
+import meetmehalfway.model.skyscanner.response.Quote;
+import meetmehalfway.model.QuoteCity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,12 +19,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Service
 public class QuoteComparer {
+
+    @Autowired
+    private SkyScannerAPIUtils skyScannerAPIUtils;
 
     private List<BrowseQuotesResponse> quoteResponses;
 
-    public QuoteComparer(List<BrowseQuotesResponse> quoteResponses){
-        this.quoteResponses = quoteResponses;
+    private  BrowseQuotesResponse browseQuotes(Passenger passenger){
+        return skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", passenger.getOrigin(), "anywhere", passenger.getDepartureDate());
+    }
+
+    public void loadFromPassengers(Search passengers){
+        this.quoteResponses = passengers.getPassengers().stream()
+                .map(this::browseQuotes)
+                .collect(Collectors.toList())
+                ;
     }
 
     public List<Quote> compareQuotes(){

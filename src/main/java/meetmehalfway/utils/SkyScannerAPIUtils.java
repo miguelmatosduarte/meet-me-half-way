@@ -1,13 +1,14 @@
-package utils;
+package meetmehalfway.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import json.schema.browsequotesresponse.BrowseQuotesResponse;
+import meetmehalfway.model.skyscanner.response.BrowseQuotesResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 public class SkyScannerAPIUtils {
 
     private Logger logger = LoggerFactory.getLogger(SkyScannerAPIUtils.class);

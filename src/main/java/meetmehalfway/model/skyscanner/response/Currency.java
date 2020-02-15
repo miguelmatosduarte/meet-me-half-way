@@ -1,5 +1,5 @@
 
-package json.schema.browsequotesresponse;
+package meetmehalfway.model.skyscanner.response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class Currency {
     @JsonProperty("RoundingCoefficient")
     private Integer roundingCoefficient;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("DecimalSeparator")
     public String getDecimalSeparator() {
@@ -195,7 +195,7 @@ public class Currency {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Currency) == false) {
+        if (!(other instanceof Currency)) {
             return false;
         }
         Currency rhs = ((Currency) other);
