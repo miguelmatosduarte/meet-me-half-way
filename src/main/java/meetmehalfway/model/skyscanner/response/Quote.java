@@ -35,6 +35,7 @@ public class Quote {
     private Boolean direct;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
+    private int passengerNumber;
 
     @JsonProperty("QuoteId")
     public Integer getQuoteId() {
@@ -109,6 +110,14 @@ public class Quote {
     public Quote withDirect(Boolean direct) {
         this.direct = direct;
         return this;
+    }
+
+    public int getPassengerNumber() {
+        return passengerNumber;
+    }
+
+    public void setPassengerNumber(int passengerNumber) {
+        this.passengerNumber = passengerNumber;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package meetmehalfway.utils;
 
-import meetmehalfway.model.search.Passenger;
-import meetmehalfway.model.search.Search;
+import meetmehalfway.model.City;
+import meetmehalfway.model.api.result.PassengerResult;
+import meetmehalfway.model.api.result.Result;
+import meetmehalfway.model.api.search.Passenger;
+import meetmehalfway.model.api.search.Passengers;
 import meetmehalfway.model.skyscanner.response.BrowseQuotesResponse;
 import meetmehalfway.model.skyscanner.response.Place;
 import meetmehalfway.model.skyscanner.response.Quote;
@@ -28,14 +31,24 @@ public class QuoteComparer {
     private List<BrowseQuotesResponse> quoteResponses;
 
     private  BrowseQuotesResponse browseQuotes(Passenger passenger){
-        return skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", passenger.getOrigin(), "anywhere", passenger.getDepartureDate());
+        BrowseQuotesResponse browseQuotesResponse = skyScannerAPIUtils.browseQuotes("PT", "EUR", "pt-PT", passenger.getOrigin(), "anywhere", passenger.getDepartureDate());
+        browseQuotesResponse.getQuotes().forEach(
+                q -> q.setPassengerNumber(passenger.getNumber())
+        );
+        return browseQuotesResponse;
     }
 
-    public void loadFromPassengers(Search passengers){
+    public void loadFromPassengers(Passengers passengers){
         this.quoteResponses = passengers.getPassengers().stream()
                 .map(this::browseQuotes)
                 .collect(Collectors.toList())
                 ;
+    }
+
+    public Result quotesToResult(List<Quote> quotes){
+        Result result = new Result();
+        //result.setCity(findCity(quotes.get(0).getOutboundLeg().getDestinationId(), quotes.get(0)));
+        return result;
     }
 
     public List<Quote> compareQuotes(){
@@ -73,7 +86,7 @@ public class QuoteComparer {
         Map<String, List<Quote>> quotesByCityId =
                 quotes.stream()
                         .collect(Collectors.groupingBy(p ->
-                                findCity(p.getOutboundLeg().getDestinationId(), places)
+                                findCity(p.getOutboundLeg().getDestinationId(), places).getCityID()
                         ));
 
         return quotesByCityId.entrySet().stream()
@@ -81,11 +94,14 @@ public class QuoteComparer {
                 .collect(Collectors.toList());
     }
 
-    private String findCity(int destinationId, List<Place> places){
-
-        return places.stream()
+    private City findCity(int destinationId, List<Place> places){
+        Place place = places.stream()
                 .filter(p -> p.getPlaceId() == destinationId)
-                .findAny().orElse(new Place()).getCityId();
+                .findAny().orElse(new Place());
+        City city = new City();
+        city.setCityID(place.getCityId());
+        city.setCityName(place.getCityName());
+        return city;
     }
 
     private Set<String> findComparableCities(List<List<QuoteCity>> quotesByDestination){

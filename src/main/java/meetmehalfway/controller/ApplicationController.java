@@ -1,6 +1,7 @@
 package meetmehalfway.controller;
 
-import meetmehalfway.model.search.Search;
+import meetmehalfway.model.api.result.Result;
+import meetmehalfway.model.api.search.Passengers;
 import meetmehalfway.model.skyscanner.response.Quote;
 import meetmehalfway.utils.QuoteComparer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,10 @@ public class ApplicationController {
 
     @RequestMapping("/search")
     @ResponseBody
-    public void search(@RequestBody Search passengers){
+    public Result search(@RequestBody Passengers passengers){
         quoteComparer.loadFromPassengers(passengers);
         List<Quote> quotes = quoteComparer.compareQuotes();
+        return quoteComparer.quotesToResult(quotes);
     }
 
 }

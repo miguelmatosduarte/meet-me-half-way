@@ -1,0 +1,27 @@
+{
+  "type": "result",
+  "city": "Madrid",
+  "totalPrice": 123.45,
+  "currency": "EUR",
+  "passengerResults":
+  [
+    {
+      "number": 1,
+      "origin": "RIOA",
+      "departureDate": "2012-04-23T18:25:43.511Z",
+      "price": 123.45
+    },
+    {
+      "number": 1,
+      "origin": "LIS",
+      "departureDate": "2012-04-23T18:25:43.511Z",
+      "price": 123.45
+    },
+    {
+      "number": 1,
+      "origin": "OPO",
+      "departureDate": "2012-04-23T18:25:43.511Z",
+      "price": 123.45
+    }
+  ]
+}

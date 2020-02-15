@@ -3,14 +3,17 @@
   "passengers":
           [
             {
+              "number": 1,
               "origin": "RIOA",
               "departureDate": "2020-07-02"
             },
             {
+              "number": 2,
               "origin": "MAD",
               "departureDate": "2020-07-02"
             },
             {
+              "number":  3,
               "origin": "RGN",
               "departureDate": "2020-07-02"
             }

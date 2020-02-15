@@ -28,9 +28,9 @@ public class Json2Pojo {
 
     public static void main(String[] args) {
 
-        String packageName="meetmehalfway.model";
+        String packageName="meetmehalfway.model.api.result";
 
-        File inputJson= new File("/Users/duartem2/Documents/TECH/repos/github/miguelmatosduarte/meet-me-half-way/src/main/resources/templates/search.json");
+        File inputJson= new File("/Users/duartem2/Documents/TECH/repos/github/miguelmatosduarte/meet-me-half-way/src/main/resources/templates/result.json");
 
         File outputPojoDirectory=new File("src/main/java/");
 

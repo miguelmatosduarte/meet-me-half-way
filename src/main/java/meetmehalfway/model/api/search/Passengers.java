@@ -1,5 +1,5 @@
 
-package meetmehalfway.model.search;
+package meetmehalfway.model.api.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,14 +13,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "type",
     "passengers"
 })
-public class Search {
+public class Passengers {
 
     @JsonProperty("type")
     private String type;
@@ -39,7 +38,7 @@ public class Search {
         this.type = type;
     }
 
-    public Search withType(String type) {
+    public Passengers withType(String type) {
         this.type = type;
         return this;
     }
@@ -54,7 +53,7 @@ public class Search {
         this.passengers = passengers;
     }
 
-    public Search withPassengers(List<Passenger> passengers) {
+    public Passengers withPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
         return this;
     }
@@ -74,7 +73,7 @@ public class Search {
         this.additionalProperties.put(name, value);
     }
 
-    public Search withAdditionalProperty(String name, Object value) {
+    public Passengers withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -89,10 +88,10 @@ public class Search {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Search)) {
+        if (!(other instanceof Passengers)) {
             return false;
         }
-        Search rhs = ((Search) other);
+        Passengers rhs = ((Passengers) other);
         return new EqualsBuilder().append(type, rhs.type).append(passengers, rhs.passengers).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 

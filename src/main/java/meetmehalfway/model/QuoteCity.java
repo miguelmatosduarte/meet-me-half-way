@@ -2,7 +2,7 @@ package meetmehalfway.model;
 
 import meetmehalfway.model.skyscanner.response.Quote;
 
-public class QuoteCity {
+public class    QuoteCity {
     private String cityId;
     private Quote quote;
 

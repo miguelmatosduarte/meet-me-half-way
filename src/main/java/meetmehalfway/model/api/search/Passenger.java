@@ -1,5 +1,5 @@
 
-package meetmehalfway.model.search;
+package meetmehalfway.model.api.search;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -20,12 +19,24 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 })
 public class Passenger {
 
+    @JsonProperty("number")
+    private int number;
     @JsonProperty("origin")
     private String origin;
     @JsonProperty("departureDate")
     private String departureDate;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
+
+    @JsonProperty("number")
+    public int getNumber() {
+        return number;
+    }
+
+    @JsonProperty("number")
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     @JsonProperty("origin")
     public String getOrigin() {
