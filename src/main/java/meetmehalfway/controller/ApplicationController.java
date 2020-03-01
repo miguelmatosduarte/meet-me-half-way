@@ -2,7 +2,7 @@ package meetmehalfway.controller;
 
 import meetmehalfway.model.api.result.Result;
 import meetmehalfway.model.api.search.Passengers;
-import meetmehalfway.model.skyscanner.response.Quote;
+import meetmehalfway.model.skyscanner.browseQuotes.Quote;
 import meetmehalfway.utils.QuoteComparer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -63,21 +63,6 @@ public class Passengers {
         return String.join(" ; ", getPassengers().toString());
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
-    public Passengers withAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-        return this;
-    }
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(type).append(passengers).append(additionalProperties).toHashCode();

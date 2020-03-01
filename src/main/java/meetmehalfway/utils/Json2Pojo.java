@@ -28,28 +28,23 @@ public class Json2Pojo {
 
     public static void main(String[] args) {
 
-        String packageName="meetmehalfway.model.api.result";
+        String packageName="meetmehalfway.model.skyscanner.geo";
 
-        File inputJson= new File("/Users/duartem2/Documents/TECH/repos/github/miguelmatosduarte/meet-me-half-way/src/main/resources/templates/result.json");
+        File inputJson= new File("/Users/duartem2/Documents/TECH/repos/github/miguelmatosduarte/meet-me-half-way/src/main/resources/templates/geo.json");
 
         File outputPojoDirectory=new File("src/main/java/");
 
-        outputPojoDirectory.mkdirs();
+        if (outputPojoDirectory.mkdirs()){
+            try {
 
-        try {
+                new Json2Pojo().convert2JSON(inputJson.toURI().toURL(), outputPojoDirectory, packageName, inputJson.getName().replace(".json", ""));
 
-            new Json2Pojo().convert2JSON(inputJson.toURI().toURL(), outputPojoDirectory, packageName, inputJson.getName().replace(".json", ""));
+            } catch (IOException e) {
+                System.out.println("Encountered issue while converting to pojo: "+e.getMessage());
+                e.printStackTrace();
 
-        } catch (IOException e) {
-
-            // TODO Auto-generated catch block
-
-            System.out.println("Encountered issue while converting to pojo: "+e.getMessage());
-
-            e.printStackTrace();
-
+            }
         }
-
     }
 
     void convert2JSON(URL inputJson, File outputPojoDirectory, String packageName, String className) throws IOException{

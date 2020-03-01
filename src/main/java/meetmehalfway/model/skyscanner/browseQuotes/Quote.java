@@ -1,5 +1,5 @@
 
-package meetmehalfway.model.skyscanner.response;
+package meetmehalfway.model.skyscanner.browseQuotes;
 
 import java.util.HashMap;
 import java.util.Map;

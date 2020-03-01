@@ -1,7 +1,9 @@
 
-package meetmehalfway.model.skyscanner.response;
+package meetmehalfway.model.skyscanner.geo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -15,45 +17,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "CarrierId",
-    "Name"
+    "Continents"
 })
-public class Carrier {
+public class Geo {
 
-    @JsonProperty("CarrierId")
-    private Integer carrierId;
-    @JsonProperty("Name")
-    private String name;
+    @JsonProperty("Continents")
+    private List<Continent> continents = new ArrayList<>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
-    @JsonProperty("CarrierId")
-    public Integer getCarrierId() {
-        return carrierId;
+    @JsonProperty("Continents")
+    public List<Continent> getContinents() {
+        return continents;
     }
 
-    @JsonProperty("CarrierId")
-    public void setCarrierId(Integer carrierId) {
-        this.carrierId = carrierId;
+    @JsonProperty("Continents")
+    public void setContinents(List<Continent> continents) {
+        this.continents = continents;
     }
 
-    public Carrier withCarrierId(Integer carrierId) {
-        this.carrierId = carrierId;
-        return this;
-    }
-
-    @JsonProperty("Name")
-    public String getName() {
-        return name;
-    }
-
-    @JsonProperty("Name")
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Carrier withName(String name) {
-        this.name = name;
+    public Geo withContinents(List<Continent> continents) {
+        this.continents = continents;
         return this;
     }
 
@@ -72,14 +56,14 @@ public class Carrier {
         this.additionalProperties.put(name, value);
     }
 
-    public Carrier withAdditionalProperty(String name, Object value) {
+    public Geo withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(carrierId).append(name).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(continents).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -87,11 +71,11 @@ public class Carrier {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Carrier)) {
+        if (!(other instanceof Geo)) {
             return false;
         }
-        Carrier rhs = ((Carrier) other);
-        return new EqualsBuilder().append(carrierId, rhs.carrierId).append(name, rhs.name).append(additionalProperties, rhs.additionalProperties).isEquals();
+        Geo rhs = ((Geo) other);
+        return new EqualsBuilder().append(continents, rhs.continents).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

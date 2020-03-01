@@ -1,0 +1,31 @@
+{
+  "Continents": [
+    {
+      "Countries": [
+        {
+          "CurrencyId": "AFN",
+          "Regions": [],
+          "Cities": [
+            {
+              "SingleAirportCity": true,
+              "Airports": [
+                {
+                  "CityId": "BINA",
+                  "CountryId": "AF",
+                  "Location": "67.823611, 34.804167",
+                  "Id": "BIN",
+                  "Name": "Bamiyan"
+                }
+              ],
+              "CountryId": "AF",
+              "Location": "67.823611, 34.804167",
+              "IataCode": "BIN",
+              "Id": "BINA",
+              "Name": "Bamiyan"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

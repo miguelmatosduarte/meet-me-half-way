@@ -5,7 +5,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import meetmehalfway.model.skyscanner.response.BrowseQuotesResponse;
+import meetmehalfway.model.skyscanner.browseQuotes.BrowseQuotesResponse;
+import meetmehalfway.model.skyscanner.geo.Geo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,11 @@ public class SkyScannerAPIUtils {
     private static final String X_RAPIDAPI_BROWSE_QUOTES_ENDPOINT = "/apiservices/browsequotes/v1.0/";
     private static final String X_RAPIDAPI_PRICING_UK_ENDPOINT = "/apiservices/pricing/uk2/v1.0/";
     private static final String X_RAPIDAPI_PRICING_KEY = "2aaae45b8bmsh9918702b54421acp165237jsn763c1f50ee62";
-    private static final String SKYSCANNER_PARTNERS_API = "http://partners.api.skyscanner.net/apiservices/pricing/uk2/v1.0/";
-
+    private static final String SKYSCANNER_API = "partners.api.skyscanner.net/apiservices/";
+    private static final String PRICING = "pricing/uk2/";
+    private static final String PLACES_GEO = "geo/";
+    private static final String API_VERSION = "v1.0";
+    private static final String GEO_API_KEY= "prtl6749387986743898559646983194";
     private String sessionKey;
 
     public SkyScannerAPIUtils() {
@@ -66,7 +70,7 @@ public class SkyScannerAPIUtils {
                     .asJson();
 
             if (response.getStatus() == HTTP_OK_STATUS_CODE) {
-                String pattern = "^" + SKYSCANNER_PARTNERS_API + "(.+)$";
+                String pattern = "^http://" + SKYSCANNER_API + PRICING + API_VERSION + "/" + "(.+)$";
                 Pattern r = Pattern.compile(pattern);
                 Matcher m = r.matcher(response.getHeaders().get("Location").get(0));
 
@@ -111,5 +115,18 @@ public class SkyScannerAPIUtils {
             logger.error("Error browsing quotes! Exception: ", e);
         }
         return quotes;
+    }
+
+    public Geo getPlacesGeo() {
+        Geo geo = new Geo();
+        try {
+            HttpResponse<JsonNode> response = Unirest.get(String.format("https://%sapikey=%s", SKYSCANNER_API + PLACES_GEO + API_VERSION + "?", GEO_API_KEY))
+                    .asJson();
+            ObjectMapper mapper = new ObjectMapper();
+            geo = mapper.readValue(response.getBody().toString(), Geo.class);
+        } catch (Exception e) {
+            logger.error("Error getting places with Geo API! Exception: ", e);
+        }
+        return geo;
     }
 }

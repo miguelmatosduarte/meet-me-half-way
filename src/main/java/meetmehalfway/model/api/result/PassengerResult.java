@@ -17,6 +17,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonPropertyOrder({
     "number",
     "origin",
+    "destination",
     "departureDate",
     "price"
 })
@@ -26,12 +27,14 @@ public class PassengerResult {
     private Integer number;
     @JsonProperty("origin")
     private String origin;
+    @JsonProperty("destination")
+    private String destination;
     @JsonProperty("departureDate")
     private String departureDate;
     @JsonProperty("price")
     private Double price;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("number")
     public Integer getNumber() {
@@ -60,6 +63,21 @@ public class PassengerResult {
 
     public PassengerResult withOrigin(String origin) {
         this.origin = origin;
+        return this;
+    }
+
+    @JsonProperty("destination")
+    public String getDestination() {
+        return destination;
+    }
+
+    @JsonProperty("destination")
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public PassengerResult withDestination(String destination) {
+        this.destination = destination;
         return this;
     }
 
@@ -123,7 +141,7 @@ public class PassengerResult {
         if (other == this) {
             return true;
         }
-        if ((other instanceof PassengerResult) == false) {
+        if (!(other instanceof PassengerResult)) {
             return false;
         }
         PassengerResult rhs = ((PassengerResult) other);

@@ -1,6 +1,6 @@
 package meetmehalfway.model;
 
-import meetmehalfway.model.skyscanner.response.Quote;
+import meetmehalfway.model.skyscanner.browseQuotes.Quote;
 
 public class    QuoteCity {
     private String cityId;

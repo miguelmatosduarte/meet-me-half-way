@@ -14,8 +14,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "origin",
-    "departureDate"
+        "number",
+        "origin",
+        "departureDate"
 })
 public class Passenger {
 
