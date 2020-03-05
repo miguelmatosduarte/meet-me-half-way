@@ -1,6 +1,7 @@
 package meetmehalfway.model;
 
 import meetmehalfway.model.skyscanner.browseQuotes.Quote;
+import meetmehalfway.model.skyscanner.geo.City;
 
 public class    QuoteCity {
     private City city;

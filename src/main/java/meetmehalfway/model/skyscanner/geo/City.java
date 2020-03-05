@@ -44,6 +44,8 @@ public class City {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
+    private String countryName;
+
     @JsonProperty("SingleAirportCity")
     public Boolean getSingleAirportCity() {
         return singleAirportCity;
@@ -147,6 +149,14 @@ public class City {
     public City withName(String name) {
         this.name = name;
         return this;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 
     @Override

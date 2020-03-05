@@ -19,7 +19,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonPropertyOrder({
     "CurrencyId",
     "Regions",
-    "Cities"
+    "Cities",
+        "Id",
+        "Name"
 })
 public class Country {
 
@@ -29,6 +31,10 @@ public class Country {
     private List<Object> regions = new ArrayList<>();
     @JsonProperty("Cities")
     private List<City> cities = new ArrayList<>();
+    @JsonProperty("Id")
+    private String id;
+    @JsonProperty("Name")
+    private String name;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -74,6 +80,36 @@ public class Country {
 
     public Country withCities(List<City> cities) {
         this.cities = cities;
+        return this;
+    }
+
+    @JsonProperty("Id")
+    public String getId() {
+        return id;
+    }
+
+    @JsonProperty("Id")
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Country withId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    @JsonProperty("Name")
+    public String getName() {
+        return name;
+    }
+
+    @JsonProperty("Name")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Country withName(String name) {
+        this.name = name;
         return this;
     }
 

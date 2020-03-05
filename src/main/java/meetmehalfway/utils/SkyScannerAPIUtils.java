@@ -127,6 +127,7 @@ public class SkyScannerAPIUtils {
         } catch (Exception e) {
             logger.error("Error getting places with Geo API! Exception: ", e);
         }
+        geo.fillCityCountryName();
         return geo;
     }
 }

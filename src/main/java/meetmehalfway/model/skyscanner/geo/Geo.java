@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import meetmehalfway.model.City;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -81,7 +80,7 @@ public class Geo {
         return new EqualsBuilder().append(continents, rhs.continents).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
-    public List<City> getAvailableCities(){
+    public List<City> getCities(){
         return this.continents.stream()
                 .map(Continent::getCountries)
                 .flatMap(List::stream)
@@ -90,9 +89,34 @@ public class Geo {
                 .map(Country::getCities)
                 .flatMap(List::stream)
                 .collect(Collectors.toList())
-                .stream()
-                .map(c -> new City().withId(c.getId()).withName(c.getName()))
-                .collect(Collectors.toList())
                 ;
+    }
+
+    public City fromCityId(String cityID){
+        return getCities()
+                .stream()
+                .filter(c -> c.getId().equals(cityID))
+                .collect(Collectors.toList())
+                .get(0)
+                ;
+    }
+
+    public City fromCityName(String name){
+        return getCities()
+                .stream()
+                .filter(c -> c.getName().equals(name))
+                .collect(Collectors.toList())
+                .get(0)
+                ;
+    }
+
+    public void fillCityCountryName(){
+        this.continents.forEach(
+                c -> c.getCountries().forEach(
+                        coun -> coun.getCities().forEach(
+                                city -> city.setCountryName(coun.getName())
+                        )
+                )
+        );
     }
 }

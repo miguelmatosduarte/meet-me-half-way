@@ -1,9 +1,9 @@
 package meetmehalfway.controller;
 
-import meetmehalfway.model.City;
 import meetmehalfway.model.api.result.Result;
 import meetmehalfway.model.api.search.Passengers;
 import meetmehalfway.model.skyscanner.browseQuotes.Quote;
+import meetmehalfway.model.skyscanner.geo.City;
 import meetmehalfway.utils.QuoteComparer;
 import meetmehalfway.utils.SkyScannerAPIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ApplicationController {
 
     @GetMapping("/cities")
     public List<City> availableCities(){
-        return skyScannerAPIUtils.getPlacesGeo().getAvailableCities();
+        return skyScannerAPIUtils.getPlacesGeo().getCities();
     }
 
     @RequestMapping("/search")
