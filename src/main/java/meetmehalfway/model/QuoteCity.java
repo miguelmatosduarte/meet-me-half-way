@@ -3,20 +3,20 @@ package meetmehalfway.model;
 import meetmehalfway.model.skyscanner.browseQuotes.Quote;
 
 public class    QuoteCity {
-    private String cityId;
+    private City city;
     private Quote quote;
 
-    public QuoteCity(String cityId, Quote quote){
+    public QuoteCity(City city, Quote quote){
         this.quote = quote;
-        this.cityId = cityId;
+        this.city = city;
     }
 
-    public String getCityId() {
-        return cityId;
+    public City getCity() {
+        return city;
     }
 
-    public void setCityId(String cityId) {
-        this.cityId = cityId;
+    public void setCity(City city) {
+        this.city = city;
     }
 
     public Quote getQuote() {

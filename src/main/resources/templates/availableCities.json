@@ -1,0 +1,9 @@
+{
+  "type": "result",
+  "city": "Madrid",
+  "totalPrice": 123.45,
+  "currency": "EUR",
+  "cities":
+  [
+  ]
+}

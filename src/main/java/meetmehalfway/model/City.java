@@ -1,5 +1,7 @@
 package meetmehalfway.model;
 
+import meetmehalfway.model.api.result.Result;
+
 public class City {
     private String cityID;
 
@@ -20,4 +22,14 @@ public class City {
     }
 
     private String cityName;
+
+    public City withName(String name) {
+        this.cityName = name;
+        return this;
+    }
+
+    public City withId(String id) {
+        this.cityID = id;
+        return this;
+    }
 }

@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import meetmehalfway.model.City;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -78,4 +81,18 @@ public class Geo {
         return new EqualsBuilder().append(continents, rhs.continents).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
+    public List<City> getAvailableCities(){
+        return this.continents.stream()
+                .map(Continent::getCountries)
+                .flatMap(List::stream)
+                .collect(Collectors.toList())
+                .stream()
+                .map(Country::getCities)
+                .flatMap(List::stream)
+                .collect(Collectors.toList())
+                .stream()
+                .map(c -> new City().withId(c.getId()).withName(c.getName()))
+                .collect(Collectors.toList())
+                ;
+    }
 }

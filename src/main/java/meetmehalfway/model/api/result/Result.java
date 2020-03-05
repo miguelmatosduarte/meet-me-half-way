@@ -34,9 +34,9 @@ public class Result {
     @JsonProperty("currency")
     private String currency;
     @JsonProperty("passengerResults")
-    private List<PassengerResult> passengerResults = new ArrayList<PassengerResult>();
+    private List<PassengerResult> passengerResults = new ArrayList<>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("type")
     public String getType() {
@@ -112,42 +112,4 @@ public class Result {
         this.passengerResults = passengerResults;
         return this;
     }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
-    public Result withAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-        return this;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(type).append(city).append(totalPrice).append(currency).append(passengerResults).append(additionalProperties).toHashCode();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof Result) == false) {
-            return false;
-        }
-        Result rhs = ((Result) other);
-        return new EqualsBuilder().append(type, rhs.type).append(city, rhs.city).append(totalPrice, rhs.totalPrice).append(currency, rhs.currency).append(passengerResults, rhs.passengerResults).append(additionalProperties, rhs.additionalProperties).isEquals();
-    }
-
 }
