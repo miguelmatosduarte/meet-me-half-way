@@ -10,6 +10,7 @@ import meetmehalfway.model.skyscanner.browseQuotes.Quote;
 import meetmehalfway.model.QuoteCity;
 import meetmehalfway.model.skyscanner.geo.City;
 import meetmehalfway.model.skyscanner.geo.Geo;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,52 +24,38 @@ import java.util.stream.Stream;
 
 public class QuoteComparer {
 
-    private List<BrowseQuotesResponse> quoteResponses;
-    private Set<Place> places;
-    private Geo geo;
-
-    private City cheapestCity;
+    @Value("${meet.me.halfway.api.result.type}")
+    private String meetMeHalfwayApiResultType;
 
     private SkyScannerAPIUtils skyScannerAPIUtils;
+    private Passengers passengers;
+    private Geo geo;
+    private Set<Place> places;
 
-    private static final String COUNTRY = "PT";
-    private static final String EURO_CURRENCY = "EUR";
-    private static final String LOCALE = "pt-PT";
-    private static final String ANYWHERE_DESTINATION = "anywhere";
-    private static final String RESULTS_TYPE = "result";
+    private void setPlaces(Set<Place> places) {
+        this.places = places;
+    }
 
-    public QuoteComparer(SkyScannerAPIUtils skyScannerAPIUtils){
+    private Set<Place> getPlaces() {
+        return this.places;
+    }
+
+    public QuoteComparer(Passengers passengers, SkyScannerAPIUtils skyScannerAPIUtils) {
+        this.passengers = passengers;
         this.skyScannerAPIUtils = skyScannerAPIUtils;
+        this.geo = skyScannerAPIUtils.geo();
     }
 
-    public void loadQuotes(Passengers passengers) {
-        this.geo = skyScannerAPIUtils.getPlacesGeo();
-        this.quoteResponses = passengers.getPassengers().stream()
-                .map(this::browseQuotes)
-                .collect(Collectors.toList())
-        ;
-        fillPlaces();
-    }
 
-    private BrowseQuotesResponse browseQuotes(Passenger passenger) {
-        String cityId = geo.fromCityName(passenger.getOrigin()).getId();
-        BrowseQuotesResponse browseQuotesResponse = skyScannerAPIUtils.browseQuotes(COUNTRY, EURO_CURRENCY, LOCALE, cityId, ANYWHERE_DESTINATION, passenger.getDepartureDate());
-        browseQuotesResponse.getQuotes().forEach(
-                q -> q.setPassengerNumber(passenger.getNumber())
-        );
-        return browseQuotesResponse;
-    }
+    public Result compareQuotes() {
 
-    private void fillPlaces(){
-        List<Place> places = new ArrayList<>();
-        quoteResponses.forEach(qr -> places.addAll(qr.getPlaces()));
-        this.places = new HashSet<>(places);
-    }
-
-    public List<Quote> compareQuotes() {
         List<List<QuoteCity>> quotesByCity = new ArrayList<>();
 
-        quoteResponses.forEach(qr ->
+        List<BrowseQuotesResponse> browseQuotesResponse = getQuotesFromPassengers();
+
+        setPlaces(getSetOfPlaces(browseQuotesResponse));
+
+        browseQuotesResponse.forEach(qr ->
                 quotesByCity.add(
                         minPricesPerCity(qr.getQuotes())
                 ));
@@ -79,7 +66,7 @@ public class QuoteComparer {
                 list -> list.removeIf(s -> !comparableCities.contains(s.getCity().getId()))
         );
 
-        setCheapestCity(findCheapestCityOverall(quotesByCity));
+        City cheapestCity = findCheapestCityOverall(quotesByCity);
 
         List<Quote> finalQuotes = new ArrayList<>();
 
@@ -92,26 +79,61 @@ public class QuoteComparer {
                 )
         );
 
-        return finalQuotes;
+        return quotesToResult(finalQuotes, cheapestCity);
     }
+
+
+    private List<BrowseQuotesResponse> getQuotesFromPassengers() {
+        return passengers.getPassengers().stream()
+                .map(this::browseQuotes)
+                .collect(Collectors.toList())
+                ;
+    }
+
+
+    private BrowseQuotesResponse browseQuotes(Passenger passenger) {
+        String cityId = geo.fromCityName(passenger.getOrigin()).getId();
+
+        BrowseQuotesResponse browseQuotesResponse = skyScannerAPIUtils
+                .browseQuotes(
+                        cityId,
+                        passenger.getDepartureDate()
+                );
+
+        browseQuotesResponse.getQuotes().forEach(
+                q -> q.setPassengerNumber(passenger.getNumber())
+        );
+        return browseQuotesResponse;
+    }
+
 
     private List<QuoteCity> minPricesPerCity(List<Quote> quotes) {
         Map<String, List<Quote>> quotesByCityId =
                 quotes.stream()
-                        .collect(Collectors.groupingBy(p ->
-                                getPlaceFromPlaceId(p.getOutboundLeg().getDestinationId()).getCityId()
-                        ));
+                        .collect(
+                                Collectors.groupingBy(
+                                        p -> getPlaceFromPlaceId(
+                                                getPlaces(),
+                                                p.getOutboundLeg().getDestinationId()
+                                        ).getCityId()
+                                )
+                        );
 
-        return quotesByCityId.entrySet().stream()
-                .map(x -> new QuoteCity(geo.fromCityId(x.getKey()), Collections.min(x.getValue(), Comparator.comparing(Quote::getMinPrice))))
+        return quotesByCityId
+                .entrySet()
+                .stream()
+                .map(
+                        x -> new QuoteCity(
+                                geo.fromCityId(x.getKey()),
+                                Collections.min(
+                                        x.getValue(),
+                                        Comparator.comparing(Quote::getMinPrice)
+                                )
+                        )
+                )
                 .collect(Collectors.toList());
     }
 
-    private Place getPlaceFromPlaceId(int placeId) {
-        return places.stream()
-                .filter(p -> p.getPlaceId() == placeId)
-                .findAny().orElse(new Place());
-    }
 
     private Set<String> findComparableCities(List<List<QuoteCity>> quotesByDestination) {
 
@@ -132,40 +154,10 @@ public class QuoteComparer {
         return comparableCities;
     }
 
-    public City getCheapestCity() {
-        return cheapestCity;
-    }
-
-    public void setCheapestCity(City cheapestCity) {
-        this.cheapestCity = cheapestCity;
-    }
-
-    public Result quotesToResult(List<Quote> quotes) {
-        List<PassengerResult> passengerResults = new ArrayList<>();
-        quotes.forEach(
-                q -> passengerResults.add(new PassengerResult()
-                        .withPrice(q.getMinPrice())
-                        .withDepartureDate(q.getOutboundLeg().getDepartureDate())
-                        .withNumber(q.getPassengerNumber())
-                        .withOrigin(getPlaceFromPlaceId(q.getOutboundLeg().getOriginId()).getName())
-                        .withDestination(getPlaceFromPlaceId(q.getOutboundLeg().getDestinationId()).getName())
-                ));
-
-        return new Result()
-                .withCity(this.cheapestCity.getName())
-                .withCurrency(EURO_CURRENCY)
-                .withTotalPrice(
-                        quotes.stream()
-                                .map(Quote::getMinPrice)
-                                .reduce(0.0, Double::sum)
-                )
-                .withPassengerResults(passengerResults)
-                .withType(RESULTS_TYPE)
-                ;
-    }
 
     private List<Set<String>> getCitiesFromQuotes(List<List<QuoteCity>> quotesByDestination) {
         List<Set<String>> citiesFromQuotes = new ArrayList<>();
+
         for (List<QuoteCity> l : quotesByDestination) {
             citiesFromQuotes.add(
                     l.stream()
@@ -176,28 +168,39 @@ public class QuoteComparer {
         return citiesFromQuotes;
     }
 
+
     private City findCheapestCityOverall(List<List<QuoteCity>> quotesByCity) {
 
         List<QuoteCity> joinedQuotesByDestination = joinListsOfQuotesByCity(quotesByCity);
 
-        Map<String, Double> sumPricesPerCity = joinedQuotesByDestination.stream()
-                .collect(Collectors.groupingBy(q -> q.getCity().getId(),
-                        Collectors.summingDouble(q -> q.getQuote().getMinPrice())));
+        Map<String, Double> sumPricesPerCity = joinedQuotesByDestination
+                .stream()
+                .collect(Collectors.groupingBy(
+                        q -> q.getCity().getId(),
+                        Collectors.summingDouble(
+                                q -> q.getQuote().getMinPrice()
+                        )
+                        )
+                );
 
         return geo.fromCityId(getMinKey(sumPricesPerCity));
     }
 
+
     private List<QuoteCity> joinListsOfQuotesByCity(List<List<QuoteCity>> quotesByCity) {
         Stream<QuoteCity> stream = Stream.of();
+
         for (List<QuoteCity> l : quotesByCity)
             stream = Stream.concat(stream, l.stream());
 
         return stream.collect(Collectors.toList());
     }
 
+
     private String getMinKey(Map<String, Double> map) {
         String minKey = null;
         double minValue = Double.MAX_VALUE;
+
         for (String key : map.keySet()) {
             double value = map.get(key);
             if (value < minValue) {
@@ -207,4 +210,49 @@ public class QuoteComparer {
         }
         return minKey;
     }
+
+
+    private Result quotesToResult(List<Quote> quotes, City cheapestCity) {
+        List<PassengerResult> passengerResults = new ArrayList<>();
+        quotes.forEach(
+                q -> passengerResults.add(new PassengerResult()
+                        .withPrice(q.getMinPrice())
+                        .withDepartureDate(q.getOutboundLeg().getDepartureDate())
+                        .withNumber(q.getPassengerNumber())
+                        .withOrigin(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getOriginId()).getName())
+                        .withDestination(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getDestinationId()).getName())
+                ));
+
+        return new Result()
+                .withCity(cheapestCity.getName())
+                .withCurrency("EUR")
+                .withTotalPrice(
+                        quotes.stream()
+                                .map(Quote::getMinPrice)
+                                .reduce(0.0, Double::sum)
+                )
+                .withPassengerResults(passengerResults)
+                .withType(meetMeHalfwayApiResultType)
+                ;
+    }
+
+
+    private Set<Place> getSetOfPlaces(List<BrowseQuotesResponse> quoteResponses){
+        List<Place> places = new ArrayList<>();
+        quoteResponses.forEach(qr -> places.addAll(qr.getPlaces()));
+        return new HashSet<>(places);
+    }
+
+
+    private Place getPlaceFromPlaceId(Set<Place> places, int placeId) {
+        return places.stream()
+                .filter(p -> p.getPlaceId() == placeId)
+                .findAny().orElse(new Place());
+    }
+
+
+
+
+
+
 }

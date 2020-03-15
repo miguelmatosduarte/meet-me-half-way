@@ -2,8 +2,6 @@ package meetmehalfway.controller;
 
 import meetmehalfway.model.api.result.Result;
 import meetmehalfway.model.api.search.Passengers;
-import meetmehalfway.model.skyscanner.browseQuotes.Quote;
-import meetmehalfway.model.skyscanner.geo.City;
 import meetmehalfway.utils.QuoteComparer;
 import meetmehalfway.utils.SkyScannerAPIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class ApplicationController {
@@ -27,17 +26,26 @@ public class ApplicationController {
     }
 
     @GetMapping("/cities")
-    public List<City> availableCities(){
-        return skyScannerAPIUtils.getPlacesGeo().getCities();
+    public Map<String, String> availableCities(){
+
+        Map<String, String> citiesCountries = new HashMap<>();
+
+        skyScannerAPIUtils.geo().getContinents().forEach(
+                continent -> continent.getCountries().forEach(
+                        country -> country.getCities().forEach(
+                                city -> citiesCountries.put(city.getName(), country.getName())
+                        )
+                )
+        );
+
+        return citiesCountries;
     }
 
     @RequestMapping("/search")
     @ResponseBody
     public Result search(@RequestBody Passengers passengers){
-        QuoteComparer quoteComparer = new QuoteComparer(skyScannerAPIUtils);
-        quoteComparer.loadQuotes(passengers);
-        List<Quote> quotes = quoteComparer.compareQuotes();
-        return quoteComparer.quotesToResult(quotes);
+        QuoteComparer quoteComparer = new QuoteComparer(passengers,skyScannerAPIUtils);
+        return quoteComparer.compareQuotes();
     }
 
 }

@@ -109,14 +109,4 @@ public class Geo {
                 .get(0)
                 ;
     }
-
-    public void fillCityCountryName(){
-        this.continents.forEach(
-                c -> c.getCountries().forEach(
-                        coun -> coun.getCities().forEach(
-                                city -> city.setCountryName(coun.getName())
-                        )
-                )
-        );
-    }
 }
