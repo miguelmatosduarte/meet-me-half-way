@@ -1,18 +1,20 @@
 package meetmehalfway.controller;
 
 import meetmehalfway.model.api.result.Result;
+import meetmehalfway.model.api.search.CitySelect;
 import meetmehalfway.model.api.search.Passengers;
 import meetmehalfway.utils.QuoteComparer;
 import meetmehalfway.utils.SkyScannerAPIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class ApplicationController {
@@ -21,27 +23,35 @@ public class ApplicationController {
     private SkyScannerAPIUtils skyScannerAPIUtils;
 
     @GetMapping("/")
+    @CrossOrigin(origins = "http://localhost:3000")
     public String index() {
         return "Welcome to Meet Me Halfway!";
     }
 
     @GetMapping("/cities")
-    public Map<String, String> availableCities(){
+    @CrossOrigin(origins = "http://localhost:3000")
+    public List<CitySelect> availableCities(){
 
-        Map<String, String> citiesCountries = new HashMap<>();
+        List<CitySelect> availableCities = new ArrayList<>();
 
         skyScannerAPIUtils.geo().getContinents().forEach(
                 continent -> continent.getCountries().forEach(
                         country -> country.getCities().forEach(
-                                city -> citiesCountries.put(city.getName(), country.getName())
+                                city -> availableCities.add(
+                                        new CitySelect()
+                                                .withCityName(city.getName())
+                                                .withCoutryName(country.getName())
+                                                .withid(city.getId())
+                                )
                         )
                 )
         );
 
-        return citiesCountries;
+        return availableCities;
     }
 
     @RequestMapping("/search")
+    @CrossOrigin(origins = "http://localhost:3000")
     @ResponseBody
     public Result search(@RequestBody Passengers passengers){
         QuoteComparer quoteComparer = new QuoteComparer(passengers,skyScannerAPIUtils);

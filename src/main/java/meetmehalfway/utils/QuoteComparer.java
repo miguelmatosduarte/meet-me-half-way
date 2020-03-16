@@ -92,11 +92,10 @@ public class QuoteComparer {
 
 
     private BrowseQuotesResponse browseQuotes(Passenger passenger) {
-        String cityId = geo.fromCityName(passenger.getOrigin()).getId();
 
         BrowseQuotesResponse browseQuotesResponse = skyScannerAPIUtils
                 .browseQuotes(
-                        cityId,
+                        passenger.getOrigin(),
                         passenger.getDepartureDate()
                 );
 

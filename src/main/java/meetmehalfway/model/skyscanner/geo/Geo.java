@@ -100,13 +100,4 @@ public class Geo {
                 .get(0)
                 ;
     }
-
-    public City fromCityName(String name){
-        return getCities()
-                .stream()
-                .filter(c -> c.getName().equals(name))
-                .collect(Collectors.toList())
-                .get(0)
-                ;
-    }
 }
