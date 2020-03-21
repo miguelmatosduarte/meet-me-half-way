@@ -2,7 +2,9 @@
 package meetmehalfway.model.api.result;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,11 +17,12 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "number",
-    "origin",
-    "destination",
-    "departureDate",
-    "price"
+        "number",
+        "origin",
+        "destination",
+        "departureDate",
+        "price",
+        "Carrier"
 })
 public class PassengerResult {
 
@@ -33,6 +36,8 @@ public class PassengerResult {
     private String departureDate;
     @JsonProperty("price")
     private Double price;
+    @JsonProperty("carriers")
+    private List<String> carriers;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -108,6 +113,21 @@ public class PassengerResult {
 
     public PassengerResult withPrice(Double price) {
         this.price = price;
+        return this;
+    }
+
+    @JsonProperty("carriers")
+    public List<String> getCarriers() {
+        return carriers;
+    }
+
+    @JsonProperty("carriers")
+    public void setCarriers(List<String> carriers) {
+        this.carriers = carriers;
+    }
+
+    public PassengerResult withCarriers(List<String> carriers) {
+        this.carriers = carriers;
         return this;
     }
 

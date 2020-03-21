@@ -5,6 +5,7 @@ import meetmehalfway.model.api.result.Result;
 import meetmehalfway.model.api.search.Passenger;
 import meetmehalfway.model.api.search.Passengers;
 import meetmehalfway.model.skyscanner.browseQuotes.BrowseQuotesResponse;
+import meetmehalfway.model.skyscanner.browseQuotes.Carrier;
 import meetmehalfway.model.skyscanner.browseQuotes.Place;
 import meetmehalfway.model.skyscanner.browseQuotes.Quote;
 import meetmehalfway.model.QuoteCity;
@@ -31,6 +32,7 @@ public class QuoteComparer {
     private Passengers passengers;
     private Geo geo;
     private Set<Place> places;
+    private Set<Carrier> carriers;
 
     private void setPlaces(Set<Place> places) {
         this.places = places;
@@ -38,6 +40,14 @@ public class QuoteComparer {
 
     private Set<Place> getPlaces() {
         return this.places;
+    }
+
+    private void setCarriers(Set<Carrier> carriers) {
+        this.carriers = carriers;
+    }
+
+    private Set<Carrier> getCarriers() {
+        return this.carriers;
     }
 
     public QuoteComparer(Passengers passengers, SkyScannerAPIUtils skyScannerAPIUtils) {
@@ -54,6 +64,8 @@ public class QuoteComparer {
         List<BrowseQuotesResponse> browseQuotesResponse = getQuotesFromPassengers();
 
         setPlaces(getSetOfPlaces(browseQuotesResponse));
+
+        setCarriers(getSetOfCarriers(browseQuotesResponse));
 
         browseQuotesResponse.forEach(qr ->
                 quotesByCity.add(
@@ -220,6 +232,7 @@ public class QuoteComparer {
                         .withNumber(q.getPassengerNumber())
                         .withOrigin(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getOriginId()).getName())
                         .withDestination(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getDestinationId()).getName())
+                        .withCarriers(getCarriersFromIds(q.getOutboundLeg().getCarrierIds()))
                 ));
 
         return new Result()
@@ -242,11 +255,29 @@ public class QuoteComparer {
         return new HashSet<>(places);
     }
 
+    private Set<Carrier> getSetOfCarriers(List<BrowseQuotesResponse> quoteResponses){
+        List<Carrier> carriers = new ArrayList<>();
+        quoteResponses.forEach(qr -> carriers.addAll(qr.getCarriers()));
+        return new HashSet<>(carriers);
+    }
+
 
     private Place getPlaceFromPlaceId(Set<Place> places, int placeId) {
         return places.stream()
                 .filter(p -> p.getPlaceId() == placeId)
                 .findAny().orElse(new Place());
+    }
+
+    private Carrier getCarrierFromId(Set<Carrier> carriers, int carrierId) {
+        return carriers.stream()
+                .filter(p -> p.getCarrierId() == carrierId)
+                .findAny().orElse(new Carrier());
+    }
+
+    private List<String> getCarriersFromIds(List<Integer> carrierIds) {
+        return carrierIds.stream()
+                .map(id -> getCarrierFromId(getCarriers(), id).getName())
+                .collect(Collectors.toList());
     }
 
 
