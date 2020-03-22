@@ -1,40 +1,28 @@
 
 package meetmehalfway.model.api.result;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "type",
-    "city",
-    "totalPrice",
-    "currency",
-    "passengerResults"
+        "type",
+        "error",
+        "searchResult"
 })
 public class Result {
 
     @JsonProperty("type")
     private String type;
-    @JsonProperty("city")
-    private String city;
-    @JsonProperty("totalPrice")
-    private Double totalPrice;
-    @JsonProperty("currency")
-    private String currency;
-    @JsonProperty("passengerResults")
-    private List<PassengerResult> passengerResults = new ArrayList<>();
+    @JsonProperty("error")
+    private Error error;
+    @JsonProperty("searchResult")
+    private SearchResult searchResult;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -53,63 +41,33 @@ public class Result {
         return this;
     }
 
-    @JsonProperty("city")
-    public String getCity() {
-        return city;
+    @JsonProperty("error")
+    public Error getError() {
+        return error;
     }
 
-    @JsonProperty("city")
-    public void setCity(String city) {
-        this.city = city;
+    @JsonProperty("error")
+    public void setError(Error error) {
+        this.error = error;
     }
 
-    public Result withCity(String city) {
-        this.city = city;
+    public Result withError(Error error) {
+        this.error = error;
         return this;
     }
 
-    @JsonProperty("totalPrice")
-    public Double getTotalPrice() {
-        return totalPrice;
+    @JsonProperty("searchResult")
+    public SearchResult getSearchResult() {
+        return searchResult;
     }
 
-    @JsonProperty("totalPrice")
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
+    @JsonProperty("searchResult")
+    public void setSearchResult(SearchResult searchResult) {
+        this.searchResult = searchResult;
     }
 
-    public Result withTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
-        return this;
-    }
-
-    @JsonProperty("currency")
-    public String getCurrency() {
-        return currency;
-    }
-
-    @JsonProperty("currency")
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public Result withCurrency(String currency) {
-        this.currency = currency;
-        return this;
-    }
-
-    @JsonProperty("passengerResults")
-    public List<PassengerResult> getPassengerResults() {
-        return passengerResults;
-    }
-
-    @JsonProperty("passengerResults")
-    public void setPassengerResults(List<PassengerResult> passengerResults) {
-        this.passengerResults = passengerResults;
-    }
-
-    public Result withPassengerResults(List<PassengerResult> passengerResults) {
-        this.passengerResults = passengerResults;
+    public Result withSearchResult(SearchResult searchResult) {
+        this.searchResult = searchResult;
         return this;
     }
 }

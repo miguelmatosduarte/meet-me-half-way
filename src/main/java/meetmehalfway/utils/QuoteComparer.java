@@ -1,17 +1,18 @@
 package meetmehalfway.utils;
 
+import meetmehalfway.model.QuoteCity;
+import meetmehalfway.model.api.result.Error;
 import meetmehalfway.model.api.result.PassengerResult;
 import meetmehalfway.model.api.result.Result;
+import meetmehalfway.model.api.result.SearchResult;
 import meetmehalfway.model.api.search.Passenger;
 import meetmehalfway.model.api.search.Passengers;
 import meetmehalfway.model.skyscanner.browseQuotes.BrowseQuotesResponse;
 import meetmehalfway.model.skyscanner.browseQuotes.Carrier;
 import meetmehalfway.model.skyscanner.browseQuotes.Place;
 import meetmehalfway.model.skyscanner.browseQuotes.Quote;
-import meetmehalfway.model.QuoteCity;
 import meetmehalfway.model.skyscanner.geo.City;
 import meetmehalfway.model.skyscanner.geo.Geo;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,9 +25,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class QuoteComparer {
-
-    @Value("${meet.me.halfway.api.result.type}")
-    private String meetMeHalfwayApiResultType;
 
     private SkyScannerAPIUtils skyScannerAPIUtils;
     private Passengers passengers;
@@ -74,6 +72,17 @@ public class QuoteComparer {
 
         Set<String> comparableCities = findComparableCities(quotesByCity);
 
+        if (comparableCities.size() == 0) {
+            return new Result()
+                    .withType("error")
+                    .withError(
+                            new Error()
+                            .withCode(ErrorType.NO_COMMON_DESTINATION.getCode())
+                            .withMessage(ErrorType.NO_COMMON_DESTINATION.getDescription())
+                    )
+                    ;
+        }
+
         quotesByCity.forEach(
                 list -> list.removeIf(s -> !comparableCities.contains(s.getCity().getId()))
         );
@@ -85,13 +94,19 @@ public class QuoteComparer {
         quotesByCity.forEach(l ->
                 finalQuotes.add(
                         l.stream().
-                                filter(q -> q.getCity().getId().equals(cheapestCity.getId())).
-                                findFirst()
-                                .orElse(new QuoteCity(new City(), new Quote())).getQuote()
+                                filter(
+                                        q -> q.getCity().getId().equals(cheapestCity.getId())
+                                ).findFirst()
+                                .orElse(new QuoteCity(new City(), new Quote()))
+                                .getQuote()
                 )
         );
 
-        return quotesToResult(finalQuotes, cheapestCity);
+        return new Result()
+                .withType("result")
+                .withSearchResult(
+                        quotesToSearchResult(finalQuotes, cheapestCity)
+                );
     }
 
 
@@ -223,7 +238,7 @@ public class QuoteComparer {
     }
 
 
-    private Result quotesToResult(List<Quote> quotes, City cheapestCity) {
+    private SearchResult quotesToSearchResult(List<Quote> quotes, City cheapestCity) {
         List<PassengerResult> passengerResults = new ArrayList<>();
         quotes.forEach(
                 q -> passengerResults.add(new PassengerResult()
@@ -235,7 +250,7 @@ public class QuoteComparer {
                         .withCarriers(getCarriersFromIds(q.getOutboundLeg().getCarrierIds()))
                 ));
 
-        return new Result()
+        return new SearchResult()
                 .withCity(cheapestCity.getName())
                 .withCurrency("EUR")
                 .withTotalPrice(
@@ -244,7 +259,6 @@ public class QuoteComparer {
                                 .reduce(0.0, Double::sum)
                 )
                 .withPassengerResults(passengerResults)
-                .withType(meetMeHalfwayApiResultType)
                 ;
     }
 
