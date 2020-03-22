@@ -3,41 +3,80 @@
     "code": "E001",
     "message": "my error message"
   },
-  "searchResult": {
-    "city": "London",
-    "totalPrice": 871.0,
-    "currency": "EUR",
-    "passengerResults": [
-      {
-        "number": 1,
-        "origin": "Rio de Janeiro Galeão Internacional",
-        "destination": "Londres - Gatwick",
-        "departureDate": "2020-07-02T00:00:00",
-        "price": 302.0,
-        "carriers": [
-          "TAP"
-        ]
-      },
-      {
-        "number": 2,
-        "origin": "Madrid",
-        "destination": "Londres - Heathrow",
-        "departureDate": "2020-07-02T00:00:00",
-        "price": 32.0,
-        "carriers": [
-          "British Airways"
-        ]
-      },
-      {
-        "number": 3,
-        "origin": "Yangon",
-        "destination": "Londres - Gatwick",
-        "departureDate": "2020-07-02T00:00:00",
-        "price": 537.0,
-        "carriers": [
-          "Qatar Airways"
-        ]
-      }
-    ]
-  }
+  "searchResult": [
+    {
+      "city": "London",
+      "totalPrice": 871.0,
+      "currency": "EUR",
+      "passengerResults": [
+        {
+          "number": 1,
+          "origin": "Rio de Janeiro Galeão Internacional",
+          "destination": "Londres - Gatwick",
+          "departureDate": "2020-07-02T00:00:00",
+          "price": 302.0,
+          "carriers": [
+            "TAP"
+          ]
+        },
+        {
+          "number": 2,
+          "origin": "Madrid",
+          "destination": "Londres - Heathrow",
+          "departureDate": "2020-07-02T00:00:00",
+          "price": 32.0,
+          "carriers": [
+            "British Airways"
+          ]
+        },
+        {
+          "number": 3,
+          "origin": "Yangon",
+          "destination": "Londres - Gatwick",
+          "departureDate": "2020-07-02T00:00:00",
+          "price": 537.0,
+          "carriers": [
+            "Qatar Airways"
+          ]
+        }
+      ]
+    },
+    {
+      "city": "London",
+      "totalPrice": 871.0,
+      "currency": "EUR",
+      "passengerResults": [
+        {
+          "number": 1,
+          "origin": "Rio de Janeiro Galeão Internacional",
+          "destination": "Londres - Gatwick",
+          "departureDate": "2020-07-02T00:00:00",
+          "price": 302.0,
+          "carriers": [
+            "TAP"
+          ]
+        },
+        {
+          "number": 2,
+          "origin": "Madrid",
+          "destination": "Londres - Heathrow",
+          "departureDate": "2020-07-02T00:00:00",
+          "price": 32.0,
+          "carriers": [
+            "British Airways"
+          ]
+        },
+        {
+          "number": 3,
+          "origin": "Yangon",
+          "destination": "Londres - Gatwick",
+          "departureDate": "2020-07-02T00:00:00",
+          "price": 537.0,
+          "carriers": [
+            "Qatar Airways"
+          ]
+        }
+      ]
+    }
+  ]
 }

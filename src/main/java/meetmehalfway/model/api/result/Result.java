@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -22,7 +23,7 @@ public class Result {
     @JsonProperty("error")
     private Error error;
     @JsonProperty("searchResult")
-    private SearchResult searchResult;
+    private List<SearchResult> searchResult;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -57,16 +58,16 @@ public class Result {
     }
 
     @JsonProperty("searchResult")
-    public SearchResult getSearchResult() {
+    public List<SearchResult> getSearchResult() {
         return searchResult;
     }
 
     @JsonProperty("searchResult")
-    public void setSearchResult(SearchResult searchResult) {
+    public void setSearchResult(List<SearchResult> searchResult) {
         this.searchResult = searchResult;
     }
 
-    public Result withSearchResult(SearchResult searchResult) {
+    public Result withSearchResult(List<SearchResult> searchResult) {
         this.searchResult = searchResult;
         return this;
     }

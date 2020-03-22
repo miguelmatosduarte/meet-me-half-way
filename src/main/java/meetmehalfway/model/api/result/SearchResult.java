@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "currency",
     "passengerResults"
 })
-public class SearchResult {
+public class SearchResult implements Comparable< SearchResult > {
 
     @JsonProperty("city")
     private String city;
@@ -89,5 +89,10 @@ public class SearchResult {
     public SearchResult withPassengerResults(List<PassengerResult> passengerResults) {
         this.passengerResults = passengerResults;
         return this;
+    }
+
+    @Override
+    public int compareTo(SearchResult o) {
+        return this.getTotalPrice().compareTo(o.getTotalPrice());
     }
 }

@@ -87,26 +87,42 @@ public class QuoteComparer {
                 list -> list.removeIf(s -> !comparableCities.contains(s.getCity().getId()))
         );
 
-        City cheapestCity = findCheapestCityOverall(quotesByCity);
+        Map<City, Double> citiesOrderedByOverallPrice = getCitiesOrderedByOverallPrice(quotesByCity);
 
-        List<Quote> finalQuotes = new ArrayList<>();
+        List<SearchResult> searchResults = getSearchResultsFromQuotes(citiesOrderedByOverallPrice, quotesByCity);
 
-        quotesByCity.forEach(l ->
-                finalQuotes.add(
-                        l.stream().
-                                filter(
-                                        q -> q.getCity().getId().equals(cheapestCity.getId())
-                                ).findFirst()
-                                .orElse(new QuoteCity(new City(), new Quote()))
-                                .getQuote()
-                )
-        );
+        Collections.sort(searchResults);
 
         return new Result()
                 .withType("result")
-                .withSearchResult(
-                        quotesToSearchResult(finalQuotes, cheapestCity)
-                );
+                .withSearchResult(searchResults);
+    }
+
+    private List<SearchResult> getSearchResultsFromQuotes(Map<City, Double> citiesOrderedByOverallPrice, List<List<QuoteCity>> quotesByCity){
+
+        List<SearchResult> searchResults = new ArrayList<>();
+
+        for (Map.Entry<City,Double> entry : citiesOrderedByOverallPrice.entrySet()){
+
+            List<Quote> cityQuotes = new ArrayList<>();
+
+            quotesByCity.forEach(l ->
+                    cityQuotes.add(
+                            l.stream().
+                                    filter(
+                                            q -> q.getCity().getId().equals(entry.getKey().getId())
+                                    ).findFirst()
+                                    .orElse(new QuoteCity(new City(), new Quote()))
+                                    .getQuote()
+                    )
+            );
+
+            searchResults.add(
+                    quotesToSearchResult(cityQuotes, entry.getKey(), entry.getValue())
+            );
+        }
+
+        return searchResults;
     }
 
 
@@ -195,21 +211,19 @@ public class QuoteComparer {
     }
 
 
-    private City findCheapestCityOverall(List<List<QuoteCity>> quotesByCity) {
+    private Map<City, Double> getCitiesOrderedByOverallPrice(List<List<QuoteCity>> quotesByCity) {
 
         List<QuoteCity> joinedQuotesByDestination = joinListsOfQuotesByCity(quotesByCity);
 
-        Map<String, Double> sumPricesPerCity = joinedQuotesByDestination
+        return joinedQuotesByDestination
                 .stream()
                 .collect(Collectors.groupingBy(
-                        q -> q.getCity().getId(),
+                        QuoteCity::getCity,
                         Collectors.summingDouble(
                                 q -> q.getQuote().getMinPrice()
                         )
                         )
                 );
-
-        return geo.fromCityId(getMinKey(sumPricesPerCity));
     }
 
 
@@ -222,23 +236,7 @@ public class QuoteComparer {
         return stream.collect(Collectors.toList());
     }
 
-
-    private String getMinKey(Map<String, Double> map) {
-        String minKey = null;
-        double minValue = Double.MAX_VALUE;
-
-        for (String key : map.keySet()) {
-            double value = map.get(key);
-            if (value < minValue) {
-                minValue = value;
-                minKey = key;
-            }
-        }
-        return minKey;
-    }
-
-
-    private SearchResult quotesToSearchResult(List<Quote> quotes, City cheapestCity) {
+    private SearchResult quotesToSearchResult(List<Quote> quotes, City city, Double overallPrice) {
         List<PassengerResult> passengerResults = new ArrayList<>();
         quotes.forEach(
                 q -> passengerResults.add(new PassengerResult()
@@ -251,13 +249,9 @@ public class QuoteComparer {
                 ));
 
         return new SearchResult()
-                .withCity(cheapestCity.getName())
+                .withCity(city.getName())
                 .withCurrency("EUR")
-                .withTotalPrice(
-                        quotes.stream()
-                                .map(Quote::getMinPrice)
-                                .reduce(0.0, Double::sum)
-                )
+                .withTotalPrice(overallPrice)
                 .withPassengerResults(passengerResults)
                 ;
     }
@@ -293,10 +287,4 @@ public class QuoteComparer {
                 .map(id -> getCarrierFromId(getCarriers(), id).getName())
                 .collect(Collectors.toList());
     }
-
-
-
-
-
-
 }
