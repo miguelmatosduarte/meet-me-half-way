@@ -21,6 +21,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
         "origin",
         "destination",
         "departureDate",
+        "returnData",
         "price",
         "Carrier"
 })
@@ -34,6 +35,8 @@ public class PassengerResult {
     private String destination;
     @JsonProperty("departureDate")
     private String departureDate;
+    @JsonProperty("returnDate")
+    private String returnDate;
     @JsonProperty("price")
     private Double price;
     @JsonProperty("carriers")
@@ -98,6 +101,21 @@ public class PassengerResult {
 
     public PassengerResult withDepartureDate(String departureDate) {
         this.departureDate = departureDate;
+        return this;
+    }
+
+    @JsonProperty("returnDate")
+    public String getReturneDate() {
+        return returnDate;
+    }
+
+    @JsonProperty("departureDate")
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public PassengerResult withReturnDate(String returnDate) {
+        this.returnDate = returnDate;
         return this;
     }
 

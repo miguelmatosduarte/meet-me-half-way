@@ -22,7 +22,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "OriginId",
     "DestinationId"
 })
-public class OutboundLeg {
+public class FlightLeg {
 
     @JsonProperty("CarrierIds")
     private List<Integer> carrierIds = new ArrayList<>();
@@ -45,7 +45,7 @@ public class OutboundLeg {
         this.carrierIds = carrierIds;
     }
 
-    public OutboundLeg withCarrierIds(List<Integer> carrierIds) {
+    public FlightLeg withCarrierIds(List<Integer> carrierIds) {
         this.carrierIds = carrierIds;
         return this;
     }
@@ -60,7 +60,7 @@ public class OutboundLeg {
         this.departureDate = departureDate;
     }
 
-    public OutboundLeg withDepartureDate(String departureDate) {
+    public FlightLeg withDepartureDate(String departureDate) {
         this.departureDate = departureDate;
         return this;
     }
@@ -75,7 +75,7 @@ public class OutboundLeg {
         this.originId = originId;
     }
 
-    public OutboundLeg withOriginId(Integer originId) {
+    public FlightLeg withOriginId(Integer originId) {
         this.originId = originId;
         return this;
     }
@@ -90,7 +90,7 @@ public class OutboundLeg {
         this.destinationId = destinationId;
     }
 
-    public OutboundLeg withDestinationId(Integer destinationId) {
+    public FlightLeg withDestinationId(Integer destinationId) {
         this.destinationId = destinationId;
         return this;
     }
@@ -110,7 +110,7 @@ public class OutboundLeg {
         this.additionalProperties.put(name, value);
     }
 
-    public OutboundLeg withAdditionalProperty(String name, Object value) {
+    public FlightLeg withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -125,10 +125,10 @@ public class OutboundLeg {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof OutboundLeg)) {
+        if (!(other instanceof FlightLeg)) {
             return false;
         }
-        OutboundLeg rhs = ((OutboundLeg) other);
+        FlightLeg rhs = ((FlightLeg) other);
         return new EqualsBuilder().append(carrierIds, rhs.carrierIds).append(departureDate, rhs.departureDate).append(originId, rhs.originId).append(destinationId, rhs.destinationId).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 

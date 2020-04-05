@@ -16,7 +16,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @JsonPropertyOrder({
         "number",
         "origin",
-        "departureDate"
+        "departureDate",
+        "returnDate"
 })
 public class Passenger {
 
@@ -26,6 +27,8 @@ public class Passenger {
     private String origin;
     @JsonProperty("departureDate")
     private String departureDate;
+    @JsonProperty("returnDate")
+    private String returnDate;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -67,6 +70,25 @@ public class Passenger {
     public Passenger withDepartureDate(String departureDate) {
         this.departureDate = departureDate;
         return this;
+    }
+
+    @JsonProperty("returnDate")
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    @JsonProperty("returnDate")
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public Passenger withReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+        return this;
+    }
+
+    public boolean hasReturnDate(){
+        return getReturnDate() != null && !getReturnDate().trim().isEmpty();
     }
 
     @Override

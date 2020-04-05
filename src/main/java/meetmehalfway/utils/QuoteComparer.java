@@ -138,12 +138,14 @@ public class QuoteComparer {
 
         BrowseQuotesResponse browseQuotesResponse = skyScannerAPIUtils
                 .browseQuotes(
-                        passenger.getOrigin(),
-                        passenger.getDepartureDate()
+                        passenger
                 );
 
         browseQuotesResponse.getQuotes().forEach(
-                q -> q.setPassengerNumber(passenger.getNumber())
+                q -> {
+                    q.setPassengerNumber(passenger.getNumber());
+                    q.setHasReturnDate(passenger.hasReturnDate());
+                }
         );
         return browseQuotesResponse;
     }
@@ -242,6 +244,7 @@ public class QuoteComparer {
                 q -> passengerResults.add(new PassengerResult()
                         .withPrice(q.getMinPrice())
                         .withDepartureDate(q.getOutboundLeg().getDepartureDate())
+                        .withReturnDate(q.getHasReturnDate() ? q.getInboundLeg().getDepartureDate(): "")
                         .withNumber(q.getPassengerNumber())
                         .withOrigin(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getOriginId()).getName())
                         .withDestination(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getDestinationId()).getName())

@@ -3,6 +3,7 @@ package meetmehalfway.model.skyscanner.browseQuotes;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,11 +16,12 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "QuoteId",
-    "QuoteDateTime",
-    "MinPrice",
-    "OutboundLeg",
-    "Direct"
+        "QuoteId",
+        "QuoteDateTime",
+        "MinPrice",
+        "OutboundLeg",
+        "InboundLeg",
+        "Direct"
 })
 public class Quote {
 
@@ -30,12 +32,15 @@ public class Quote {
     @JsonProperty("MinPrice")
     private Double minPrice;
     @JsonProperty("OutboundLeg")
-    private OutboundLeg outboundLeg;
+    private FlightLeg outboundLeg;
+    @JsonProperty("InboundLeg")
+    private FlightLeg inboundLeg;
     @JsonProperty("Direct")
     private Boolean direct;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
     private int passengerNumber;
+    private boolean hasReturnDate;
 
     @JsonProperty("QuoteId")
     public Integer getQuoteId() {
@@ -83,17 +88,32 @@ public class Quote {
     }
 
     @JsonProperty("OutboundLeg")
-    public OutboundLeg getOutboundLeg() {
+    public FlightLeg getOutboundLeg() {
         return outboundLeg;
     }
 
     @JsonProperty("OutboundLeg")
-    public void setOutboundLeg(OutboundLeg outboundLeg) {
+    public void setOutboundLeg(FlightLeg outboundLeg) {
         this.outboundLeg = outboundLeg;
     }
 
-    public Quote withOutboundLeg(OutboundLeg outboundLeg) {
+    public Quote withOutboundLeg(FlightLeg outboundLeg) {
         this.outboundLeg = outboundLeg;
+        return this;
+    }
+
+    @JsonProperty("InboundLeg")
+    public FlightLeg getInboundLeg() {
+        return inboundLeg;
+    }
+
+    @JsonProperty("InboundLeg")
+    public void setInboundLeg(FlightLeg inboundLeg) {
+        this.inboundLeg = inboundLeg;
+    }
+
+    public Quote withInboundLeg(FlightLeg inboundLeg) {
+        this.inboundLeg = inboundLeg;
         return this;
     }
 
@@ -118,6 +138,14 @@ public class Quote {
 
     public void setPassengerNumber(int passengerNumber) {
         this.passengerNumber = passengerNumber;
+    }
+
+    public boolean getHasReturnDate() {
+        return hasReturnDate;
+    }
+
+    public void setHasReturnDate(boolean hasReturnDate) {
+        this.hasReturnDate = hasReturnDate;
     }
 
     @Override

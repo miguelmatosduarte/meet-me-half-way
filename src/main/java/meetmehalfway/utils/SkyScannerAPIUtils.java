@@ -6,6 +6,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import meetmehalfway.model.api.search.Passenger;
 import meetmehalfway.model.skyscanner.browseQuotes.BrowseQuotesResponse;
 import meetmehalfway.model.skyscanner.geo.Geo;
 import org.slf4j.Logger;
@@ -13,37 +14,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class SkyScannerAPIUtils {
 
     private Logger logger = LoggerFactory.getLogger(SkyScannerAPIUtils.class);
-
-    @Value("${skyscanner.api.host}")
-    private String skyscannerApiHost;
-
-    @Value("${skyscanner.api.browse.quotes.endpoint}")
-    private String skyscannerApiBroswQuotesEndpoint;
-
-    @Value("${skyscanner.api.key}")
-    private String skyscannerApiKey;
+    private static final int HTTP_OK_STATUS_CODE = 200;
 
     @Value("${partners.skyscanner.api}")
     private String partnersSkyscannerApi;
 
+    @Value("${skyscanner.api.apiservices.endpoint}")
+    private String skyscannerApiApiservicesEndpoint;
+
+    @Value("${skyscanner.api.browsequotes.endpoint}")
+    private String skyscannerApiBrowsequotesEndpoint;
+
+    @Value("${skyscanner.api.version.endpoint}")
+    private String skyscannerApiVersionEndpoint;
+
     @Value("${skyscanner.api.geo.endpoint}")
     private String skyscannerApiGeoEndpoint;
 
-    @Value("${skyscanner.api.version}")
-    private String skyscannerApiVersion;
-
-    @Value("${skyscanner.api.geo.key}")
-    private String skyscannerApiGeoKey;
-
-    @Value("${skyscanner.api.host.header}")
-    private String skyscannerApiHostHeader;
-
-    @Value("${skyscanner.api.key.header}")
-    private String skyscannerApiKeyHeader;
+    @Value("${skyscanner.api.key}")
+    private String skyscannerApiKey;
 
     @Value("${skyscanner.api.browse.quotes.country}")
     private String skyscannerApiBrowseQuotesCountry;
@@ -58,26 +52,55 @@ public class SkyScannerAPIUtils {
     private String skyscannerApiBrowseQuotesDestination;
 
 
-    public BrowseQuotesResponse browseQuotes(String originPlace, String outboundPartialDate) {
+    public BrowseQuotesResponse browseQuotes(Passenger passenger) {
         BrowseQuotesResponse quotes = new BrowseQuotesResponse();
+
+        StringBuilder url = new StringBuilder(
+                String.format("%s%s%s%s/%s/%s/%s/%s/%s",
+                        getSkyscannerApiEndpoint(),
+                        skyscannerApiBrowsequotesEndpoint,
+                        skyscannerApiVersionEndpoint,
+                        skyscannerApiBrowseQuotesCountry,
+                        skyscannerApiBrowseQuotesCurrency,
+                        skyscannerApiBrowseQuotesLocale,
+                        passenger.getOrigin(),
+                        skyscannerApiBrowseQuotesDestination,
+                        passenger.getDepartureDate())
+        );
+
+        if (passenger.hasReturnDate()){
+            url.append(
+                    String.format(
+                            "/%s",
+                            passenger.getReturnDate()
+                    )
+            );
+        }
+
+        url.append(
+                String.format(
+                        "?apikey=%s",
+                        skyscannerApiKey
+                )
+        );
+
         try {
-            HttpResponse<JsonNode> response = Unirest.get(
-                    String.format("https://%s%s%s/%s/%s/%s/%s/%s",
-                            skyscannerApiHost,
-                            skyscannerApiBroswQuotesEndpoint,
-                            skyscannerApiBrowseQuotesCountry,
-                            skyscannerApiBrowseQuotesCurrency,
-                            skyscannerApiBrowseQuotesLocale,
-                            originPlace,
-                            skyscannerApiBrowseQuotesDestination,
-                            outboundPartialDate)
-            )
-                    .header(skyscannerApiHostHeader, skyscannerApiHost)
-                    .header(skyscannerApiKeyHeader, skyscannerApiKey)
-                    .asJson();
+
+            int statusCode =-1;
+
+            HttpResponse<JsonNode> response = null;
+
+            while (statusCode != HTTP_OK_STATUS_CODE){
+                response = Unirest.get(url.toString())
+                        .asJson();
+
+                statusCode = response.getStatus();
+            }
+
 
             ObjectMapper mapper = new ObjectMapper();
             quotes = mapper.readValue(response.getBody().toString(), BrowseQuotesResponse.class);
+
         } catch (UnirestException | JsonProcessingException e) {
             logger.error("Error browsing quotes from SkyScanner. Exception: ", e);
         }
@@ -87,7 +110,15 @@ public class SkyScannerAPIUtils {
     public Geo geo() {
         Geo geo = new Geo();
         try {
-            HttpResponse<JsonNode> response = Unirest.get(String.format("https://%sapikey=%s", partnersSkyscannerApi + skyscannerApiGeoEndpoint + skyscannerApiVersion + "?", skyscannerApiGeoKey))
+            HttpResponse<JsonNode> response = Unirest.get(
+                    String.format(
+                            "%s%s%s?apikey=%s",
+                            getSkyscannerApiEndpoint(),
+                            skyscannerApiGeoEndpoint,
+                            skyscannerApiVersionEndpoint,
+                            skyscannerApiKey
+                    )
+            )
                     .asJson();
 
             ObjectMapper mapper = new ObjectMapper();
@@ -96,5 +127,9 @@ public class SkyScannerAPIUtils {
             logger.error("Error getting places from SkyScanner. Exception: ", e);
         }
         return geo;
+    }
+
+    public String getSkyscannerApiEndpoint(){
+        return String.format("https://%s%s", partnersSkyscannerApi, skyscannerApiApiservicesEndpoint);
     }
 }
