@@ -18,29 +18,18 @@
 		<java.version>1.8</java.version>
 		<spring-web.version>5.2.2.RELEASE</spring-web.version>
 		<unirest-java.version>1.4.9</unirest-java.version>
-		<jsonschema2pojo-core.version>0.4.35</jsonschema2pojo-core.version>
+		<commons-lang.version>2.6</commons-lang.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.jsonschema2pojo</groupId>
-			<artifactId>jsonschema2pojo-core</artifactId>
-			<version>${jsonschema2pojo-core.version}</version>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons-lang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
 		<dependency>
