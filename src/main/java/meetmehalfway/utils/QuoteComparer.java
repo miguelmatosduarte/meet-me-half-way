@@ -112,7 +112,7 @@ public class QuoteComparer {
                                     filter(
                                             q -> q.getCity().getId().equals(entry.getKey().getId())
                                     ).findFirst()
-                                    .orElse(new QuoteCity(new City(), new Quote()))
+                                    .orElse(new QuoteCity(City.builder().build(), Quote.builder().build()))
                                     .getQuote()
                     )
             );
@@ -244,7 +244,7 @@ public class QuoteComparer {
                 q -> passengerResults.add(new PassengerResult()
                         .withPrice(q.getMinPrice())
                         .withDepartureDate(q.getOutboundLeg().getDepartureDate())
-                        .withReturnDate(q.getHasReturnDate() ? q.getInboundLeg().getDepartureDate(): "")
+                        .withReturnDate(q.isHasReturnDate() ? q.getInboundLeg().getDepartureDate(): "")
                         .withNumber(q.getPassengerNumber())
                         .withOrigin(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getOriginId()).getName())
                         .withDestination(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getDestinationId()).getName())
@@ -276,13 +276,13 @@ public class QuoteComparer {
     private Place getPlaceFromPlaceId(Set<Place> places, int placeId) {
         return places.stream()
                 .filter(p -> p.getPlaceId() == placeId)
-                .findAny().orElse(new Place());
+                .findAny().orElse(Place.builder().build());
     }
 
     private Carrier getCarrierFromId(Set<Carrier> carriers, int carrierId) {
         return carriers.stream()
                 .filter(p -> p.getCarrierId() == carrierId)
-                .findAny().orElse(new Carrier());
+                .findAny().orElse(Carrier.builder().build());
     }
 
     private List<String> getCarriersFromIds(List<Integer> carrierIds) {

@@ -1,6 +1,7 @@
 package meetmehalfway.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -53,7 +54,7 @@ public class SkyScannerAPIUtils {
 
 
     public BrowseQuotesResponse browseQuotes(Passenger passenger) {
-        BrowseQuotesResponse quotes = new BrowseQuotesResponse();
+        BrowseQuotesResponse quotes = BrowseQuotesResponse.builder().build();
 
         StringBuilder url = new StringBuilder(
                 String.format("%s%s%s%s/%s/%s/%s/%s/%s",
@@ -99,6 +100,7 @@ public class SkyScannerAPIUtils {
 
 
             ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             quotes = mapper.readValue(response.getBody().toString(), BrowseQuotesResponse.class);
 
         } catch (UnirestException | JsonProcessingException e) {
@@ -108,7 +110,7 @@ public class SkyScannerAPIUtils {
     }
 
     public Geo geo() {
-        Geo geo = new Geo();
+        Geo geo = Geo.builder().build();
         try {
             HttpResponse<JsonNode> response = Unirest.get(
                     String.format(
@@ -122,6 +124,7 @@ public class SkyScannerAPIUtils {
                     .asJson();
 
             ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             geo = mapper.readValue(response.getBody().toString(), Geo.class);
         } catch (UnirestException | JsonProcessingException e) {
             logger.error("Error getting places from SkyScanner. Exception: ", e);

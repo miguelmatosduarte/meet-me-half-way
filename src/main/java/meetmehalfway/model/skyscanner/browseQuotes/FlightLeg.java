@@ -1,20 +1,21 @@
 
 package meetmehalfway.model.skyscanner.browseQuotes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
+@Data
+@JsonDeserialize(builder = FlightLeg.FlightLegBuilder.class)
+@Builder(builderClassName = "FlightLegBuilder", toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "CarrierIds",
@@ -25,7 +26,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class FlightLeg {
 
     @JsonProperty("CarrierIds")
-    private List<Integer> carrierIds = new ArrayList<>();
+    private List<Integer> carrierIds;
     @JsonProperty("DepartureDate")
     private String departureDate;
     @JsonProperty("OriginId")
@@ -33,103 +34,9 @@ public class FlightLeg {
     @JsonProperty("DestinationId")
     private Integer destinationId;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private Map<String, Object> additionalProperties;
 
-    @JsonProperty("CarrierIds")
-    public List<Integer> getCarrierIds() {
-        return carrierIds;
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class FlightLegBuilder {
     }
-
-    @JsonProperty("CarrierIds")
-    public void setCarrierIds(List<Integer> carrierIds) {
-        this.carrierIds = carrierIds;
-    }
-
-    public FlightLeg withCarrierIds(List<Integer> carrierIds) {
-        this.carrierIds = carrierIds;
-        return this;
-    }
-
-    @JsonProperty("DepartureDate")
-    public String getDepartureDate() {
-        return departureDate;
-    }
-
-    @JsonProperty("DepartureDate")
-    public void setDepartureDate(String departureDate) {
-        this.departureDate = departureDate;
-    }
-
-    public FlightLeg withDepartureDate(String departureDate) {
-        this.departureDate = departureDate;
-        return this;
-    }
-
-    @JsonProperty("OriginId")
-    public Integer getOriginId() {
-        return originId;
-    }
-
-    @JsonProperty("OriginId")
-    public void setOriginId(Integer originId) {
-        this.originId = originId;
-    }
-
-    public FlightLeg withOriginId(Integer originId) {
-        this.originId = originId;
-        return this;
-    }
-
-    @JsonProperty("DestinationId")
-    public Integer getDestinationId() {
-        return destinationId;
-    }
-
-    @JsonProperty("DestinationId")
-    public void setDestinationId(Integer destinationId) {
-        this.destinationId = destinationId;
-    }
-
-    public FlightLeg withDestinationId(Integer destinationId) {
-        this.destinationId = destinationId;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
-    public FlightLeg withAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-        return this;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(carrierIds).append(departureDate).append(originId).append(destinationId).append(additionalProperties).toHashCode();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof FlightLeg)) {
-            return false;
-        }
-        FlightLeg rhs = ((FlightLeg) other);
-        return new EqualsBuilder().append(carrierIds, rhs.carrierIds).append(departureDate, rhs.departureDate).append(originId, rhs.originId).append(destinationId, rhs.destinationId).append(additionalProperties, rhs.additionalProperties).isEquals();
-    }
-
 }
