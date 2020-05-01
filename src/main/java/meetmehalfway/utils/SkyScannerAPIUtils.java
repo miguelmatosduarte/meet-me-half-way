@@ -8,8 +8,10 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import meetmehalfway.model.api.search.Passenger;
+import meetmehalfway.model.skyscanner.SkyScannerApiResponse;
 import meetmehalfway.model.skyscanner.browseQuotes.BrowseQuotesResponse;
 import meetmehalfway.model.skyscanner.geo.Geo;
+import meetmehalfway.model.skyscanner.validationErrors.ValidationErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,10 @@ public class SkyScannerAPIUtils {
 
     private Logger logger = LoggerFactory.getLogger(SkyScannerAPIUtils.class);
     private static final int HTTP_OK_STATUS_CODE = 200;
+    private static final int HTTP_BAD_REQUEST_STATUS_CODE = 400;
+    private static final int HTTP_REQUEST_LIMIT_EXCEEDED_STATUS_CODE = 429;
+
+    private static final int NUM_REQUESTS_LIMIT = 10;
 
     @Value("${partners.skyscanner.api}")
     private String partnersSkyscannerApi;
@@ -53,8 +59,10 @@ public class SkyScannerAPIUtils {
     private String skyscannerApiBrowseQuotesDestination;
 
 
-    public BrowseQuotesResponse browseQuotes(Passenger passenger) {
-        BrowseQuotesResponse quotes = BrowseQuotesResponse.builder().build();
+    public SkyScannerApiResponse browseQuotes(Passenger passenger) {
+        BrowseQuotesResponse quotes;
+        ValidationErrors validationErrors = ValidationErrors.builder().build();
+        SkyScannerApiResponse skyScannerApiResponse = SkyScannerApiResponse.builder().build();
 
         StringBuilder url = new StringBuilder(
                 String.format("%s%s%s%s/%s/%s/%s/%s/%s",
@@ -91,22 +99,38 @@ public class SkyScannerAPIUtils {
 
             HttpResponse<JsonNode> response = null;
 
-            while (statusCode != HTTP_OK_STATUS_CODE){
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+            int numRequests = 0;
+            loop: while (statusCode != HTTP_OK_STATUS_CODE && numRequests < NUM_REQUESTS_LIMIT){
                 response = Unirest.get(url.toString())
                         .asJson();
 
                 statusCode = response.getStatus();
+
+                switch(statusCode){
+                    case HTTP_BAD_REQUEST_STATUS_CODE:
+                        validationErrors = mapper.readValue(response.getBody().toString(), ValidationErrors.class);
+                        break loop;
+                    case HTTP_REQUEST_LIMIT_EXCEEDED_STATUS_CODE:
+                        numRequests++;
+                        break;
+                    default:
+                        break;
+                }
             }
-
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             quotes = mapper.readValue(response.getBody().toString(), BrowseQuotesResponse.class);
+            skyScannerApiResponse = SkyScannerApiResponse.builder()
+                    .browseQuotesResponse(quotes)
+                    .validationErrors(validationErrors)
+                    .build()
+                    ;
 
         } catch (UnirestException | JsonProcessingException e) {
             logger.error("Error browsing quotes from SkyScanner. Exception: ", e);
         }
-        return quotes;
+        return skyScannerApiResponse;
     }
 
     public Geo geo() {

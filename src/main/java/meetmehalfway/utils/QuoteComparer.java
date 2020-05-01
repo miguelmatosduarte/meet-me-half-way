@@ -7,6 +7,7 @@ import meetmehalfway.model.api.result.Result;
 import meetmehalfway.model.api.result.SearchResult;
 import meetmehalfway.model.api.search.Passenger;
 import meetmehalfway.model.api.search.Passengers;
+import meetmehalfway.model.skyscanner.SkyScannerApiResponse;
 import meetmehalfway.model.skyscanner.browseQuotes.BrowseQuotesResponse;
 import meetmehalfway.model.skyscanner.browseQuotes.Carrier;
 import meetmehalfway.model.skyscanner.browseQuotes.Place;
@@ -59,10 +60,22 @@ public class QuoteComparer {
 
         List<List<QuoteCity>> quotesByCity = new ArrayList<>();
 
-        List<BrowseQuotesResponse> browseQuotesResponse = getQuotesFromPassengers();
+        List<SkyScannerApiResponse> skyScannerApiResponse = getQuotesFromPassengers();
+
+        if (skyScannerApiResponse.stream()
+                .anyMatch(r -> !r.getValidationErrors().getValidationErrors().isEmpty())) {
+            List<Error> validationErrors = Error.parseValidationErrors(skyScannerApiResponse);
+            return Result.builder()
+                    .type("error")
+                    .errors(validationErrors)
+                    .build();
+        }
+
+        List<BrowseQuotesResponse> browseQuotesResponse = skyScannerApiResponse.stream()
+                .map(SkyScannerApiResponse::getBrowseQuotesResponse)
+                .collect(Collectors.toList());
 
         setPlaces(getSetOfPlaces(browseQuotesResponse));
-
         setCarriers(getSetOfCarriers(browseQuotesResponse));
 
         browseQuotesResponse.forEach(qr ->
@@ -73,13 +86,16 @@ public class QuoteComparer {
         Set<String> comparableCities = findComparableCities(quotesByCity);
 
         if (comparableCities.size() == 0) {
-            return new Result()
-                    .withType("error")
-                    .withError(
-                            new Error()
-                            .withCode(ErrorType.NO_COMMON_DESTINATION.getCode())
-                            .withMessage(ErrorType.NO_COMMON_DESTINATION.getDescription())
-                    )
+            return Result.builder()
+                    .type("error")
+                    .errors(
+                            Collections.singletonList(
+                                    Error.builder()
+                                            .code(ErrorType.NO_COMMON_DESTINATION.getCode())
+                                            .message(ErrorType.NO_COMMON_DESTINATION.getDescription())
+                                            .build()
+                            )
+                    ).build()
                     ;
         }
 
@@ -93,16 +109,17 @@ public class QuoteComparer {
 
         Collections.sort(searchResults);
 
-        return new Result()
-                .withType("result")
-                .withSearchResult(searchResults);
+        return Result.builder()
+                .type("result")
+                .searchResult(searchResults)
+                .build();
     }
 
-    private List<SearchResult> getSearchResultsFromQuotes(Map<City, Double> citiesOrderedByOverallPrice, List<List<QuoteCity>> quotesByCity){
+    private List<SearchResult> getSearchResultsFromQuotes(Map<City, Double> citiesOrderedByOverallPrice, List<List<QuoteCity>> quotesByCity) {
 
         List<SearchResult> searchResults = new ArrayList<>();
 
-        for (Map.Entry<City,Double> entry : citiesOrderedByOverallPrice.entrySet()){
+        for (Map.Entry<City, Double> entry : citiesOrderedByOverallPrice.entrySet()) {
 
             List<Quote> cityQuotes = new ArrayList<>();
 
@@ -126,7 +143,7 @@ public class QuoteComparer {
     }
 
 
-    private List<BrowseQuotesResponse> getQuotesFromPassengers() {
+    private List<SkyScannerApiResponse> getQuotesFromPassengers() {
         return passengers.getPassengers().stream()
                 .map(this::browseQuotes)
                 .collect(Collectors.toList())
@@ -134,20 +151,29 @@ public class QuoteComparer {
     }
 
 
-    private BrowseQuotesResponse browseQuotes(Passenger passenger) {
+    private SkyScannerApiResponse browseQuotes(Passenger passenger) {
 
-        BrowseQuotesResponse browseQuotesResponse = skyScannerAPIUtils
+        SkyScannerApiResponse skyScannerApiResponse = skyScannerAPIUtils
                 .browseQuotes(
                         passenger
                 );
 
-        browseQuotesResponse.getQuotes().forEach(
-                q -> {
-                    q.setPassengerNumber(passenger.getNumber());
-                    q.setHasReturnDate(passenger.hasReturnDate());
-                }
+        skyScannerApiResponse.setPassengerNumber(
+                passenger.getNumber()
         );
-        return browseQuotesResponse;
+        skyScannerApiResponse.setHasReturnDate(
+                passenger.hasReturnDate()
+        );
+
+        if (skyScannerApiResponse.getBrowseQuotesResponse().getQuotes() != null) {
+            skyScannerApiResponse.getBrowseQuotesResponse().getQuotes().forEach(
+                    q -> {
+                        q.setPassengerNumber(passenger.getNumber());
+                        q.setHasReturnDate(passenger.hasReturnDate());
+                    }
+            );
+        }
+        return skyScannerApiResponse;
     }
 
 
@@ -244,7 +270,7 @@ public class QuoteComparer {
                 q -> passengerResults.add(new PassengerResult()
                         .withPrice(q.getMinPrice())
                         .withDepartureDate(q.getOutboundLeg().getDepartureDate())
-                        .withReturnDate(q.isHasReturnDate() ? q.getInboundLeg().getDepartureDate(): "")
+                        .withReturnDate(q.isHasReturnDate() ? q.getInboundLeg().getDepartureDate() : "")
                         .withNumber(q.getPassengerNumber())
                         .withOrigin(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getOriginId()).getName())
                         .withDestination(getPlaceFromPlaceId(getPlaces(), q.getOutboundLeg().getDestinationId()).getName())
@@ -260,13 +286,13 @@ public class QuoteComparer {
     }
 
 
-    private Set<Place> getSetOfPlaces(List<BrowseQuotesResponse> quoteResponses){
+    private Set<Place> getSetOfPlaces(List<BrowseQuotesResponse> quoteResponses) {
         List<Place> places = new ArrayList<>();
         quoteResponses.forEach(qr -> places.addAll(qr.getPlaces()));
         return new HashSet<>(places);
     }
 
-    private Set<Carrier> getSetOfCarriers(List<BrowseQuotesResponse> quoteResponses){
+    private Set<Carrier> getSetOfCarriers(List<BrowseQuotesResponse> quoteResponses) {
         List<Carrier> carriers = new ArrayList<>();
         quoteResponses.forEach(qr -> carriers.addAll(qr.getCarriers()));
         return new HashSet<>(carriers);
