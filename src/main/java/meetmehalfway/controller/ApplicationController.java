@@ -40,7 +40,7 @@ public class ApplicationController {
                                 city -> availableCities.add(
                                         new CitySelect()
                                                 .withCityName(city.getName())
-                                                .withCoutryName(country.getName())
+                                                .withCoutryName(city.getCountryId())
                                                 .withid(city.getId())
                                 )
                         )
