@@ -63,7 +63,7 @@ public class QuoteComparer {
         List<SkyScannerApiResponse> skyScannerApiResponse = getQuotesFromPassengers();
 
         if (skyScannerApiResponse.stream()
-                .anyMatch(r -> !r.getValidationErrors().getValidationErrors().isEmpty())) {
+                .anyMatch(r -> r.getValidationErrors().getValidationErrors() != null)) {
             List<Error> validationErrors = Error.parseValidationErrors(skyScannerApiResponse);
             return Result.builder()
                     .type("error")
