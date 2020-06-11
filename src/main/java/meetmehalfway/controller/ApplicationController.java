@@ -57,5 +57,4 @@ public class ApplicationController {
         QuoteComparer quoteComparer = new QuoteComparer(passengers,skyScannerAPIUtils);
         return quoteComparer.compareQuotes();
     }
-
 }
