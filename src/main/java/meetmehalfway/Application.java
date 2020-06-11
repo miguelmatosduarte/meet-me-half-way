@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages= {"meetmehalfway.controller", "meetmehalfway.model", "meetmehalfway.utils"})
 public class Application {
 
 	public static void main(String[] args) {
