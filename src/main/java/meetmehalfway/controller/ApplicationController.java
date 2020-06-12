@@ -23,13 +23,13 @@ public class ApplicationController {
     private SkyScannerAPIUtils skyScannerAPIUtils;
 
     @GetMapping("/")
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"https://meetmehalfway.site", "http://localhost:3000"})
     public String index() {
         return "Welcome to Meet Me Halfway!";
     }
 
     @GetMapping("/cities")
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"https://meetmehalfway.site", "http://localhost:3000"})
     public List<CitySelect> availableCities(){
 
         List<CitySelect> availableCities = new ArrayList<>();
@@ -51,7 +51,7 @@ public class ApplicationController {
     }
 
     @RequestMapping("/search")
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = {"https://meetmehalfway.site", "http://localhost:3000"})
     @ResponseBody
     public Result search(@RequestBody Passengers passengers){
         QuoteComparer quoteComparer = new QuoteComparer(passengers,skyScannerAPIUtils);
