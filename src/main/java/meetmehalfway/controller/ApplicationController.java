@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +21,6 @@ public class ApplicationController {
 
     @Autowired
     private SkyScannerAPIUtils skyScannerAPIUtils;
-
-    @Autowired
-    private HttpServletRequest request;
 
     @GetMapping("/")
     @CrossOrigin(origins = "http://localhost:3000")
