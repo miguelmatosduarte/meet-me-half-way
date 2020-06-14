@@ -7,6 +7,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import meetmehalfway.model.api.search.CitySelect;
 import meetmehalfway.model.api.search.Passenger;
 import meetmehalfway.model.skyscanner.SkyScannerApiResponse;
 import meetmehalfway.model.skyscanner.browseQuotes.BrowseQuotesResponse;
@@ -16,6 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -27,6 +32,8 @@ public class SkyScannerAPIUtils {
     private static final int HTTP_REQUEST_LIMIT_EXCEEDED_STATUS_CODE = 429;
 
     private static final int NUM_REQUESTS_LIMIT = 10;
+
+    private List<CitySelect> availableCities;
 
     @Value("${partners.skyscanner.api}")
     private String partnersSkyscannerApi;
@@ -57,6 +64,29 @@ public class SkyScannerAPIUtils {
 
     @Value("${skyscanner.api.browse.quotes.destination}")
     private String skyscannerApiBrowseQuotesDestination;
+
+    public List<CitySelect> getAvailableCities(){
+        return availableCities;
+    }
+
+    @PostConstruct
+    private void loadCities() {
+
+        availableCities = new ArrayList<>();
+        
+        geo().getContinents().forEach(
+                continent -> continent.getCountries().forEach(
+                        country -> country.getCities().forEach(
+                                city -> availableCities.add(
+                                        new CitySelect()
+                                                .withCityName(city.getName())
+                                                .withCoutryName(city.getCountryId())
+                                                .withid(city.getId())
+                                )
+                        )
+                )
+        );
+    }
 
 
     public SkyScannerApiResponse browseQuotes(Passenger passenger) {

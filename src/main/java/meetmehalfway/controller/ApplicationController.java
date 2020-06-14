@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,22 +31,7 @@ public class ApplicationController {
     @CrossOrigin(origins = {"https://meetmehalfway.site", "http://localhost:3000"})
     public List<CitySelect> availableCities(){
 
-        List<CitySelect> availableCities = new ArrayList<>();
-
-        skyScannerAPIUtils.geo().getContinents().forEach(
-                continent -> continent.getCountries().forEach(
-                        country -> country.getCities().forEach(
-                                city -> availableCities.add(
-                                        new CitySelect()
-                                                .withCityName(city.getName())
-                                                .withCoutryName(city.getCountryId())
-                                                .withid(city.getId())
-                                )
-                        )
-                )
-        );
-
-        return availableCities;
+        return skyScannerAPIUtils.getAvailableCities();
     }
 
     @RequestMapping("/search")
