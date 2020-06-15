@@ -72,8 +72,10 @@ public class SkyScannerAPIUtils {
     @PostConstruct
     private void loadCities() {
 
+        logger.info("Loading available cities.");
+
         availableCities = new ArrayList<>();
-        
+
         geo().getContinents().forEach(
                 continent -> continent.getCountries().forEach(
                         country -> country.getCities().forEach(
